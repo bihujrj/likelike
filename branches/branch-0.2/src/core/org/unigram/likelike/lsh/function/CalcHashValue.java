@@ -18,10 +18,7 @@ package org.unigram.likelike.lsh.function;
 
 public class CalcHashValue {
     
-    public CalcHashValue(Long hashSeed) {
-        System.out.println("hashSeed:" + hashSeed);
-        this.hashSeed = hashSeed;
-    }
+    public CalcHashValue() {}
 
     /**
      * Create hashed value from the given 
@@ -32,7 +29,7 @@ public class CalcHashValue {
      * @param value
      * @return
      */
-    public Long run(long value) {  
+    public Long run(long value, long hashSeed) {  
         Long key = (value+hashSeed);
         key = (~key) + (key << 21);
         key = key ^ (key >>> 24);
@@ -43,7 +40,5 @@ public class CalcHashValue {
         key = key + (key << 31);
         return key;
     }   
-    
-    /** Seed value of hash. */
-    private final Long hashSeed;
+
 }

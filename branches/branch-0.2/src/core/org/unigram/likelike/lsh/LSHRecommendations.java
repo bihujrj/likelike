@@ -49,6 +49,7 @@ import org.unigram.likelike.common.FsUtil;
 import org.unigram.likelike.common.LikelikeConstants;
 import org.unigram.likelike.common.LikelikeLogger;
 import org.unigram.likelike.common.RelatedUsersWritable;
+import org.unigram.likelike.common.SeedClusterId;
 
 /**
  * Extract recommendations for input examples. 
@@ -117,31 +118,25 @@ public class LSHRecommendations extends
                     LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES);
                 logger.logInfo("Number of reducers: " + numReducers);
         
-        Vector<Long> keys = new Vector<Long>();
-        
-        /* iterate to extract clusters */ 
+
         FsUtil.checkPath(new Path(clusterDir),
                 FileSystem.get(conf));        
+        Vector<Long> keys = new Vector<Long>();
+        StringBuffer keysStr = new StringBuffer(); 
         for (int i =0; i < iterate; i++) {
-            String clusterOutputFile = new String(
-                    clusterDir+"/"+"iter"+Integer.toString(i));
-            logger.logInfo("Extracting clusters: " + clusterOutputFile);
             Long hashKey = this.rand.nextLong();
-            conf.setLong(MinWiseFunction.MINWISE_HASH_SEED, hashKey);
             keys.add(hashKey);
-            Counters counters = this.extractClusters(inputFile, 
-                    clusterOutputFile, conf);
-            
-            if (i == 0) {
-                this.setResultConf(counters, conf);
-            }
+            keysStr.append(hashKey.toString() + ":");
         }
         
-         this.getRecommendations(clusterDir + "/*", 
-                 outputPrefix, conf, fs);
-
-         FsUtil.clean(FileSystem.get(conf), clusterDir);
-         this.saveKeys(keys, inputFile, conf);
+        conf.set(SelectClustersMapper.MINWISE_HASH_SEEDS, keysStr.toString());
+        Counters counters = this.extractClusters(inputFile, 
+                clusterDir, conf);
+        this.setResultConf(counters, conf);        
+        this.getRecommendations(clusterDir, 
+                outputPrefix, conf, fs);
+        FsUtil.clean(FileSystem.get(conf), clusterDir);
+        this.saveKeys(keys, inputFile, conf);
         return 0;
     }
   
@@ -220,7 +215,6 @@ public class LSHRecommendations extends
             Configuration conf) throws IOException, 
             InterruptedException, ClassNotFoundException {
         
-        
         Path inputPath = new Path(inputFile);
         Path outputPath = new Path(clusterFile);
         FsUtil.checkPath(outputPath, FileSystem.get(conf));
@@ -231,9 +225,9 @@ public class LSHRecommendations extends
         FileOutputFormat.setOutputPath(job, outputPath);
         job.setMapperClass(SelectClustersMapper.class);
         job.setReducerClass(SelectClustersReducer.class);
-        job.setMapOutputKeyClass(LongWritable.class);
+        job.setMapOutputKeyClass(SeedClusterId.class);
         job.setMapOutputValueClass(LongWritable.class);
-        job.setOutputKeyClass(LongWritable.class);
+        job.setOutputKeyClass(SeedClusterId.class);
         job.setOutputValueClass(RelatedUsersWritable.class);
         job.setOutputFormatClass(
                 SequenceFileOutputFormat.class);

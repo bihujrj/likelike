@@ -2,7 +2,7 @@
  * Copyright 2009 Takahiko Ito
  * 
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * Licenced under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
  * You may obtain a copy of the License at 
  * 
@@ -34,14 +34,14 @@ public class MinWiseFunction implements IHashFunction {
      */
     @Override
     public LongWritable returnClusterId(
-            Map<Long,Long> featureVector) {
+            Map<Long,Long> featureVector, long seed) {
         long clusterId = 0;
         
         TreeMap<Long,Long> hashedFeatureVector 
             = new TreeMap<Long,Long>(); // key: hashed, value: id
         
         for (Long key : featureVector.keySet()) {
-            hashedFeatureVector.put(this.calcHash.run(key), 
+            hashedFeatureVector.put(this.calcHash.run(key, seed), 
                         new Long(featureVector.get(key)));
         }
         
@@ -62,20 +62,10 @@ public class MinWiseFunction implements IHashFunction {
      * @param conf get parameters.
      */
     public MinWiseFunction(Configuration conf) {
-        this.calcHash = new CalcHashValue(
-                conf.getLong(MINWISE_HASH_SEED, 
-                DEFAULT_MINWISE_HASH_SEED));
+        this.calcHash = new CalcHashValue();
         this.depth = conf.getInt(LikelikeConstants.FEATURE_DEPTH,
                 LikelikeConstants.DEFAULT_FEATURE_DEPTH);
     }
-    
-    /** symbol: hash seed. */
-    public static final String MINWISE_HASH_SEED
-        = "likelike.minwise.hash.seed";
-    
-    /** default: hash seed. */
-    public static final long DEFAULT_MINWISE_HASH_SEED    
-        = 1L;    
     
     /** for safe. */
     private MinWiseFunction() {

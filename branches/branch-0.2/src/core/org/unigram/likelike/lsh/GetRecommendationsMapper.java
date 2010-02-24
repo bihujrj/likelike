@@ -25,12 +25,13 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.RelatedUsersWritable;
+import org.unigram.likelike.common.SeedClusterId;
 
 public class GetRecommendationsMapper extends
-        Mapper<LongWritable, RelatedUsersWritable, LongWritable, Candidate> {
+        Mapper<SeedClusterId, RelatedUsersWritable, LongWritable, Candidate> {
     
     @Override
-    public final void map(final LongWritable key,
+    public final void map(final SeedClusterId key,
             final RelatedUsersWritable value, final Context context) 
     throws IOException, InterruptedException {
         List<LongWritable> relatedUsers = value.getRelatedUsers();

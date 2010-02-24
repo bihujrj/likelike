@@ -29,10 +29,11 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
 import org.unigram.likelike.common.LikelikeConstants;
+import org.unigram.likelike.common.SeedClusterId;
 import org.unigram.likelike.lsh.function.IHashFunction;
 
 public class SelectClustersMapper extends
-        Mapper<LongWritable, Text, LongWritable, LongWritable> {
+        Mapper<LongWritable, Text, SeedClusterId, LongWritable> {
 
     /**
      * @param key dummy
@@ -49,8 +50,15 @@ public class SelectClustersMapper extends
             Long id = Long.parseLong(tokens[0]);
             Map<Long, Long> featureMap 
                 = this.extractFeatures(tokens[1]);
-            context.write(this.function.returnClusterId(featureMap), 
-                    new LongWritable(id));
+            
+            for (int i=0; i<seedsAry.length; i++) {
+                LongWritable clusterId 
+                    = this.function.returnClusterId(featureMap, 
+                        seedsAry[i]);
+                context.write(new SeedClusterId(
+                        seedsAry[i], clusterId.get()), 
+                        new LongWritable(id));
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("PARSING ERROR in line: " + inputStr);
             e.printStackTrace();
@@ -71,7 +79,8 @@ public class SelectClustersMapper extends
     
     public final void setup(final Context context) {
         Configuration jc = context.getConfiguration();
-        /** create a object implements IHashFunction */
+
+        /* create a object implements IHashFunction */
         String functionClassName 
             = LikelikeConstants.DEFAULT_HASH_FUNCTION;
         if (context == null || jc == null) {
@@ -100,10 +109,30 @@ public class SelectClustersMapper extends
             throw new RuntimeException(iae);
         } catch (InvocationTargetException ite) {
             throw new RuntimeException(ite.getCause());
-        }        
+        }
+        
+        /* extract set of hash seeds */
+        String seedsStr = jc.get(MINWISE_HASH_SEEDS, 
+                DEFAULT_MINWISE_HASH_SEEDS);
+        String[] seedsStrAry = seedsStr.split(":");
+        this.seedsAry = new long[seedsStrAry.length];
+        for (int i =0; i< seedsStrAry.length; i++) {
+            this.seedsAry[i] =Long.parseLong(seedsStrAry[i]);
+        }
     }
-    
+        
     /** Hash function object. */
     private IHashFunction function;
+    
+    /** Set of hash seeds. */
+    private long[] seedsAry; 
 
+    /** symbol: hash seed. */
+    public static final String MINWISE_HASH_SEEDS
+        = "likelike.minwise.hash.seedS";
+    
+    /** default: hash seed. */
+    public static final String DEFAULT_MINWISE_HASH_SEEDS    
+        = "1";        
+    
 }

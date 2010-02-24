@@ -23,5 +23,6 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 
 public interface IHashFunction {
-    LongWritable returnClusterId(Map<Long, Long> featureVector);
+    LongWritable returnClusterId(Map<Long, Long> featureVector, 
+            long seed);
 }

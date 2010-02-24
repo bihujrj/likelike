@@ -38,6 +38,7 @@ public class TestMinWiseFunction extends TestCase {
         super(name);
     }
     
+    /*
     private Map<Long, Long> initMap(Long[] keys, Long[] values) {
         Map<Long, Long> rtMap = new HashMap<Long, Long>();
         for(int i=0;i<keys.length;i++) {
@@ -48,7 +49,7 @@ public class TestMinWiseFunction extends TestCase {
     
     private IHashFunction createFunction(long hashSeed, int depth) {
         Configuration conf = new Configuration();        
-        conf.setLong(MinWiseFunction.MINWISE_HASH_SEED, 1438L);
+        conf.setLong(SlectClustersMapper.MINWISE_HASH_SEEDS, 1438L);
         conf.setInt(LikelikeConstants.FEATURE_DEPTH, depth);        
         return (IHashFunction) new MinWiseFunction(conf);
     }    
@@ -112,5 +113,5 @@ public class TestMinWiseFunction extends TestCase {
         assertFalse(hashValue2 
                 == hashValue2_dash);        
     }
-
+    */
 }
