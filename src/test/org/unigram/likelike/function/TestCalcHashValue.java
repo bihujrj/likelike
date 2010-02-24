@@ -40,12 +40,12 @@ public class TestCalcHashValue extends TestCase {
     }
 
     public void testRun() {
-        CalcHashValue calcHash = new CalcHashValue(3349L); 
+        CalcHashValue calcHash = new CalcHashValue(); 
         
         /* test collision */
         Map<Long, Long>resultMap = new HashMap<Long, Long>();
         for (int i = 0; i<100000; i++) {
-            Long hashedValue = calcHash.run((long) i);
+            Long hashedValue = calcHash.run((long) i, 3349L);
             if (resultMap.containsKey(hashedValue)) {
                 fail("Collision keys!");
                 Long count = resultMap.get(hashedValue);
@@ -73,12 +73,12 @@ public class TestCalcHashValue extends TestCase {
     
     private Set<Long> extractTopRanked(long hashSeed, 
             int size, int threshold) {
-        CalcHashValue calcHash = new CalcHashValue(hashSeed);
+        CalcHashValue calcHash = new CalcHashValue();
         TreeMap<Long,Long> hashedValues = new TreeMap<Long,Long>();
 
         for (int i=0; i<size; i++) {
             hashedValues.put(
-                    calcHash.run((long) i), 
+                    calcHash.run((long) i, hashSeed), 
                     (long) i);
         }
         
