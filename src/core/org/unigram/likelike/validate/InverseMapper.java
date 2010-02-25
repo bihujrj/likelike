@@ -17,11 +17,10 @@ public class InverseMapper extends Mapper<LongWritable,
         String valueStr = value.toString();        
         String[] valueArray = valueStr.split("\t");
         
-        //System.out.println("key: "+ key+"\tvalueStr: " + valueStr);
-        
         if (valueArray.length == 2) {
-            context.write(new LongWritable(Long.parseLong(valueArray[1]))
-            , new Text(valueArray[0]));
+            context.write(
+                    new LongWritable(Long.parseLong(valueArray[1])), 
+                    new Text(valueArray[0]));
         } else {
             System.out.println("invalid input:" + value);
         }

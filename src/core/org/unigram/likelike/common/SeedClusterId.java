@@ -70,8 +70,10 @@ public final class SeedClusterId
         return a < b ? -1 : a > b ? 1 : 0;
     }
   
+    /** hash seed value whih is used to generate clusterId. */
     private long hashSeed;
   
+    /** cluster ID. */
     private long clusterId; 
   
 }
