@@ -54,8 +54,6 @@ public class SelectClustersReducer extends
         
         if (this.minimumClusterSize <= clusterSize) {
             RelatedUsersWritable relatedUsers = new RelatedUsersWritable(ids);
-            //System.out.println("for target:" + key.toString());
-            //System.out.println("RelatedUsers:" + relatedUsers.toString());
             context.write(key, relatedUsers);
         }
     }
