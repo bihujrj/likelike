@@ -86,8 +86,6 @@ public class LSHRecommendations extends
         int iterate = 1;
         int depth   = 0;
         int rowSize = 0;
-        
-        FileSystem fs = FileSystem.get(conf);
 
         for (int i = 0; i < args.length; ++i) {
             if ("-input".equals(args[i])) {
@@ -112,33 +110,28 @@ public class LSHRecommendations extends
             } 
         }
         
-        int numReducers = conf.getInt(
-                LikelikeConstants.NUMBER_OF_REDUCES,
-                    LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES);
-                logger.logInfo("Number of reducers: " + numReducers);
-        
-
-        FsUtil.checkPath(new Path(clusterDir),
-                FileSystem.get(conf));        
-        Vector<Long> keys = new Vector<Long>();
-        StringBuffer keysStr = new StringBuffer(); 
-        for (int i =0; i < iterate; i++) {
-            Long hashKey = this.rand.nextLong();
-            keys.add(hashKey);
-            keysStr.append(hashKey.toString() + ":");
-        }
-        
-        conf.set(SelectClustersMapper.MINWISE_HASH_SEEDS, keysStr.toString());
+        String keysStr = this.setHashKeys(iterate, conf);
         Counters counters = this.extractClusters(inputFile, 
                 clusterDir, conf);
-        this.setResultConf(counters, conf);        
+        this.setResultConf(counters, conf);
         this.getRecommendations(clusterDir, 
-                outputPrefix, conf, fs);
-        FsUtil.clean(FileSystem.get(conf), clusterDir);
-        this.saveKeys(keys, inputFile, conf);
+                outputPrefix, conf, FileSystem.get(conf));
+        this.saveKeys(keysStr.toString(), inputFile, conf);
+        FsUtil.clean(FileSystem.get(conf), clusterDir);        
         return 0;
     }
   
+    private String setHashKeys(int iterate, Configuration conf) {
+        StringBuffer keysStr = new StringBuffer(); 
+        for (int i =0; i < iterate; i++) {
+            Long hashKey = this.rand.nextLong();
+            keysStr.append(hashKey.toString() + ":");
+        }
+        conf.set(SelectClustersMapper.MINWISE_HASH_SEEDS, 
+                keysStr.toString());
+        return keysStr.toString();
+    }
+
     private void setResultConf(Counters counters, Configuration conf) {
         conf.setLong(LikelikeConstants.LIKELIKE_INPUT_RECORDS, 
                 counters.findCounter(
@@ -149,8 +142,7 @@ public class LSHRecommendations extends
                         LikelikeConstants.LIKELIKE_INPUT_RECORDS, -1));
     }
 
-
-    private void saveKeys(Vector<Long> keys, 
+    private void saveKeys(String keys, 
             String inputFile, Configuration conf) 
     throws IOException {
         /* save to local fs */
@@ -159,9 +151,7 @@ public class LSHRecommendations extends
             FileOutputStream fos = new FileOutputStream(tempKeyFile);
             OutputStreamWriter osw = new OutputStreamWriter(fos , "UTF-8");
             BufferedWriter bw = new BufferedWriter(osw);
-            for (Long key : keys) {
-                bw.write(Long.toString(key)+"\n");
-            }
+            bw.write(keys+"\n");
             bw.close();
             osw.close();
             fos.close();
@@ -213,7 +203,7 @@ public class LSHRecommendations extends
             String clusterFile,
             Configuration conf) throws IOException, 
             InterruptedException, ClassNotFoundException {
-        
+
         Path inputPath = new Path(inputFile);
         Path outputPath = new Path(clusterFile);
         FsUtil.checkPath(outputPath, FileSystem.get(conf));
