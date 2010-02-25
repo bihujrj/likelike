@@ -77,7 +77,6 @@ public class LSHRecommendations extends
         return this.run(args, conf);
     }
     
-
     public int run(String[] args, Configuration conf) 
     throws Exception {
 
