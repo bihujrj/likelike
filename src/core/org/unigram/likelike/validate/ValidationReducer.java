@@ -19,40 +19,44 @@ import org.apache.hadoop.mapreduce.Mapper.Context;
 public class ValidationReducer extends
     Reducer<LongWritable, Text, LongWritable, Text> {
 
+    /** 
+     * value candidate
+     * key targets and candidateFeature
+     */
     @Override
-    public void reduce(final LongWritable target,
+    public void reduce(final LongWritable candidate,
             final Iterable<Text> values,
             final Context context)
             throws IOException, InterruptedException {    
 
         /* extract features */
-        List<String> candidates = new LinkedList<String>();
-        Map<Long, Long> targetFeature = new HashMap<Long, Long>();  
+        List<String> targets = new LinkedList<String>();
+        Map<Long, Long> candidateFeature = new HashMap<Long, Long>();  
         for (Text v : values) {
-            String candStr = v.toString();
-             String[] candInfoAry = candStr.split("\t");
-             if (candInfoAry.length == 1) {
-                 targetFeature = getFeature(candStr);
-             } else if (candInfoAry.length == 2) {
-                 candidates.add(candStr);
+            String inputStr = v.toString();
+             String[] infoAry = inputStr.split("\t");
+             if (infoAry.length == 1) {  // candidate feature
+                 candidateFeature = getFeature(inputStr);
+             } else if (infoAry.length == 2) { // targets
+                 targets.add(inputStr);
              }
         }
         
         /* run validation */
-        for (String candStr : candidates) {
-            String[] candInfoAry = candStr.split("\t");
-            String candIdStr = candInfoAry[0];
-            String candFeatureStr = candInfoAry[1];
-            Map<Long, Long> candFeature 
-                = this.getFeature(candFeatureStr);
+        for (String targetStr : targets) {
+            String[] targetInfoAry = targetStr.split("\t");
+            String targetIdStr = targetInfoAry[0];
+            String targetFeatureStr = targetInfoAry[1];
+            Map<Long, Long> targetFeature 
+                = this.getFeature(targetFeatureStr);
             
             /* TODO to be efficient */
             double result 
-                = this.calcCosine(targetFeature, candFeature);
+                = this.calcCosine(candidateFeature, targetFeature);
 
             if (result >= threshold) {
                 /* TODO output the features with related examples */ 
-                context.write(target, new Text(candIdStr));
+                context.write(candidate, new Text(targetIdStr));
             }
         }
     }
