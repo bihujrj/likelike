@@ -33,25 +33,30 @@ public class GetRecommendationsMapper extends
     @Override
     public final void map(final SeedClusterId key,
             final RelatedUsersWritable value, final Context context) 
-    throws IOException, InterruptedException {
+    throws IOException, InterruptedException  {
         List<LongWritable> relatedUsers = value.getRelatedUsers();
-        
-        //System.out.println("relatedUsers.size():" + relatedUsers.size());
-        
-        for (int i = 0; i < relatedUsers.size(); i++) {
-            LongWritable targetId 
-            = new LongWritable(relatedUsers.get(i).get());
-            //System.out.println("targetId: " + targetId);            
-            for (int j = 0; j < relatedUsers.size(); j++) {
-                if (i == j) {
-                    continue;
-                }
-                LongWritable candidateId 
-                    = new LongWritable(relatedUsers.get(j).get());
-            
-                context.write(targetId, new Candidate(candidateId, 
-                        new LongWritable(relatedUsers.size())));
-            }
+        for (int targetId = 0; targetId < relatedUsers.size(); targetId++) {
+            this.writeCandidates(targetId, relatedUsers, context);
         }
     }
+
+    private void writeCandidates(int targetIndex,
+            List<LongWritable> relatedUsers, Context context) 
+        throws IOException, InterruptedException {
+        LongWritable targetId 
+            = new LongWritable(relatedUsers.get(targetIndex).get());        
+        for (int candidateIndex = 0; 
+            candidateIndex < relatedUsers.size(); candidateIndex++) {
+            if (targetIndex == candidateIndex) {
+                continue;
+            }
+            LongWritable candidateId 
+                = new LongWritable(relatedUsers.get(candidateIndex).get());
+            context.write(targetId, new Candidate(candidateId, 
+                    new LongWritable(relatedUsers.size())));
+        }
+    }
+    
+    
+        
 }
