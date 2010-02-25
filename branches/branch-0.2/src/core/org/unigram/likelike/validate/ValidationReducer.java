@@ -50,14 +50,11 @@ public class ValidationReducer extends
             double result 
                 = this.calcCosine(targetFeature, candFeature);
 
-            //System.out.println("targetId:" + target + "\tcandId: " + candIdStr + "\tresult: " + result);
-            //System.out.println("threhold: "+this.threshold);
-            
             if (result >= threshold) {
+                /* TODO output the features with related examples */ 
                 context.write(target, new Text(candIdStr));
             }
         }
-        
     }
 
     private double calcCosine(Map<Long, Long> vectorOne,

@@ -31,6 +31,7 @@ public class Validation extends Configured implements Tool {
 
     public int run(String[] args, Configuration conf) 
     throws Exception {
+        
         String recommendDir = "";
         String addedFeatureDir = "";
         String featureDir = "";
@@ -62,7 +63,7 @@ public class Validation extends Configured implements Tool {
         
         this.inverse(tmpOutputDir, outputDir, conf, fs);
         
-        //FsUtil.clean(fs, tmpOutputDir);
+        FsUtil.clean(fs, tmpOutputDir);
         
         return 0;
     }    
