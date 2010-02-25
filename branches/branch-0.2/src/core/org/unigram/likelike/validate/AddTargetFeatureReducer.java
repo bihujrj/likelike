@@ -9,7 +9,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
-public class AddCandidateFeatureReducer extends
+public class AddTargetFeatureReducer extends
         Reducer<LongWritable, Text, LongWritable, Text> {
     
     @Override
@@ -30,7 +30,7 @@ public class AddCandidateFeatureReducer extends
 
         /* output recommendations with target features */
         for (Long v : candidates) {
-            context.write(new LongWritable(v), rtValue);
+            context.write(new LongWritable(v), rtValue); // key: candidates value: target with features
         }
     }
 }

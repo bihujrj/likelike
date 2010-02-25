@@ -52,7 +52,9 @@ public class Validation extends Configured implements Tool {
             } else if ("-threshold".equals(args[i])) {
                 conf.setFloat(ValidationConstants.VALIDATION_THRESHOLD, 
                         Float.parseFloat(args[++i]));                
-            }                      
+            } else if ("-extractFeature".equals(args[i])) {
+                // TODO
+            }
         }
 
         this.addCandidateFeatures(recommendDir, 
@@ -131,8 +133,8 @@ public class Validation extends Configured implements Tool {
         FileInputFormat.addInputPath(job, recommendPath);
         FileInputFormat.addInputPath(job, featurePath);
         FileOutputFormat.setOutputPath(job, outputPath);
-        job.setMapperClass(AddCandidateFeatureMapper.class); 
-        job.setReducerClass(AddCandidateFeatureReducer.class);
+        job.setMapperClass(AddTargetFeatureMapper.class); 
+        job.setReducerClass(AddTargetFeatureReducer.class);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(LongWritable.class);

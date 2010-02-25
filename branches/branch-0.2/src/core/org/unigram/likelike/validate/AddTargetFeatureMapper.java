@@ -6,7 +6,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class AddCandidateFeatureMapper extends
+public class AddTargetFeatureMapper extends
         Mapper<LongWritable, Text, LongWritable, Text> {
     
     @Override
@@ -17,8 +17,9 @@ public class AddCandidateFeatureMapper extends
         String[] valueArray = valueStr.split("\t");
         
         if (valueArray.length == 2) {
-            context.write(new LongWritable(Long.parseLong(valueArray[0])),
-                          new Text(valueArray[1]));
+            context.write(new LongWritable(
+                        Long.parseLong(valueArray[0])),
+                        new Text(valueArray[1]));
         } else {
             System.out.println(
                     "invalid line(should have two segments): " + valueStr);
