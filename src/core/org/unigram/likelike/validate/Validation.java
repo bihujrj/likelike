@@ -21,8 +21,8 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.unigram.likelike.common.FsUtil;
 import org.unigram.likelike.common.LikelikeConstants;
-import org.unigram.likelike.util.AddTargetFeatureMapper;
-import org.unigram.likelike.util.AddTargetFeatureReducer;
+import org.unigram.likelike.util.AddFeatureMapper;
+import org.unigram.likelike.util.AddFeatureReducer;
 import org.unigram.likelike.util.IdentityReducer;
 import org.unigram.likelike.util.InverseMapper;
 
@@ -138,8 +138,8 @@ public class Validation extends Configured implements Tool {
         FileInputFormat.addInputPath(job, recommendPath);
         FileInputFormat.addInputPath(job, featurePath);
         FileOutputFormat.setOutputPath(job, outputPath);
-        job.setMapperClass(AddTargetFeatureMapper.class); 
-        job.setReducerClass(AddTargetFeatureReducer.class);
+        job.setMapperClass(AddFeatureMapper.class); 
+        job.setReducerClass(AddFeatureReducer.class);
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(LongWritable.class);
