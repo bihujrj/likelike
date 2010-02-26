@@ -21,6 +21,10 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.unigram.likelike.common.FsUtil;
 import org.unigram.likelike.common.LikelikeConstants;
+import org.unigram.likelike.util.AddTargetFeatureMapper;
+import org.unigram.likelike.util.AddTargetFeatureReducer;
+import org.unigram.likelike.util.IdentityReducer;
+import org.unigram.likelike.util.InverseMapper;
 
 public class Validation extends Configured implements Tool {
 

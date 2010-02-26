@@ -1,4 +1,4 @@
-package org.unigram.likelike.validate;
+package org.unigram.likelike.util;
 
 import java.io.IOException;
 
