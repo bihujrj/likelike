@@ -53,8 +53,9 @@ public class SelectClustersReducer extends
         }
         
         if (this.minimumClusterSize <= clusterSize) {
-            RelatedUsersWritable relatedUsers = new RelatedUsersWritable(ids);
-            context.write(key, relatedUsers);
+            RelatedUsersWritable relatedUsers
+                = new RelatedUsersWritable(ids);
+                context.write(key, relatedUsers);
         }
     }
     
@@ -72,9 +73,9 @@ public class SelectClustersReducer extends
                 LikelikeConstants.DEFAULT_MIN_CLUSTER_SIZE);                
     }
     
-    /** maximum number of examples in a cluster */
+    /** maximum number of examples in a cluster. */
     private long maximumClusterSize;
     
-    /** minimum number of examples in a cluster */    
+    /** minimum number of examples in a cluster. */    
     private long minimumClusterSize;
 }

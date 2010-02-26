@@ -2,6 +2,7 @@ package org.unigram.likelike.validate;
 
 import java.io.IOException;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 import javax.print.attribute.standard.OutputDeviceAssigned;
 
@@ -38,7 +39,7 @@ public class Validation extends Configured implements Tool {
         String outputDir = "";
         String tmpOutputDir = "";
 
-        FileSystem fs = FileSystem.get(conf);
+        this.fs = FileSystem.get(conf);
 
         for (int i = 0; i < args.length; ++i) {
             if ("-recommend".equals(args[i])) {
@@ -52,30 +53,28 @@ public class Validation extends Configured implements Tool {
             } else if ("-threshold".equals(args[i])) {
                 conf.setFloat(ValidationConstants.VALIDATION_THRESHOLD, 
                         Float.parseFloat(args[++i]));                
-            } else if ("-extractFeature".equals(args[i])) {
-                // TODO
-            }
+            } 
         }
 
-        this.addCandidateFeatures(recommendDir, 
-                addedFeatureDir, featureDir, conf, fs);
+        this.addTargetFeatures(recommendDir, 
+                addedFeatureDir, featureDir, conf);
         
         this.validate(addedFeatureDir, 
-                    tmpOutputDir, featureDir, conf, fs);
+                    tmpOutputDir, featureDir, conf);
         
-        this.inverse(tmpOutputDir, outputDir, conf, fs);
+        this.inverse(tmpOutputDir, outputDir, conf);
         
-        FsUtil.clean(fs, tmpOutputDir);
+        FsUtil.clean(this.fs, tmpOutputDir);
         
         return 0;
     }    
     
     private boolean inverse(String inputDir, String outputDir,
-            Configuration conf, FileSystem fs) 
+            Configuration conf) 
     throws IOException, InterruptedException, ClassNotFoundException {
         Path inputPath = new Path(inputDir);
         Path outputPath = new Path(outputDir);
-        FsUtil.checkPath(outputPath, FileSystem.get(conf));
+        FsUtil.checkPath(outputPath, this.fs);
         
         Job job = new Job(conf);
         job.setJarByClass(Validation.class);
@@ -87,19 +86,20 @@ public class Validation extends Configured implements Tool {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(Text.class);
-        job.setNumReduceTasks(conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
+        job.setNumReduceTasks(
+                conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);
     }
 
     private boolean validate(String addedFeatureDir, String outputDir,
-            String featureDir, Configuration conf, FileSystem fs) 
+            String featureDir, Configuration conf) 
     throws IOException, InterruptedException, ClassNotFoundException {
         Path addedfeaturePath = new Path(addedFeatureDir);
         Path outputPath = new Path(outputDir);
         Path featurePath = new Path(featureDir);
-        FsUtil.checkPath(outputPath, FileSystem.get(conf));
+        FsUtil.checkPath(outputPath, this.fs);
         
         Job job = new Job(conf);
         job.setJarByClass(Validation.class);
@@ -112,21 +112,22 @@ public class Validation extends Configured implements Tool {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(Text.class);
-        job.setNumReduceTasks(conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
+        job.setNumReduceTasks(
+                conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);                  
         
     }
 
-    private boolean addCandidateFeatures(String recommendDir, 
+    private boolean addTargetFeatures(String recommendDir, 
             String outputFile, String featureDir,
-            Configuration conf, FileSystem fs) throws 
+            Configuration conf) throws 
             IOException, InterruptedException, ClassNotFoundException {
         Path recommendPath = new Path(recommendDir);
         Path featurePath = new Path(featureDir);
         Path outputPath = new Path(outputFile);
-        FsUtil.checkPath(outputPath, FileSystem.get(conf));
+        FsUtil.checkPath(outputPath, this.fs);
 
         Job job = new Job(conf);
         job.setJarByClass(Validation.class);
@@ -139,7 +140,8 @@ public class Validation extends Configured implements Tool {
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(LongWritable.class);
-        job.setNumReduceTasks(conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
+        job.setNumReduceTasks(
+                conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);          
@@ -156,5 +158,7 @@ public class Validation extends Configured implements Tool {
         int exitCode = ToolRunner.run(
                 new Validation(), args);
         System.exit(exitCode);
-    }    
+    }
+    
+    private FileSystem fs = null;
 }
