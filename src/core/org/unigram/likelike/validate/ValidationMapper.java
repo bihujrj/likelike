@@ -14,13 +14,12 @@ public class ValidationMapper extends Mapper
             final Text value, final Context context) 
         throws IOException, InterruptedException {    
         String valueStr = value.toString();
-        String[] valueArray = valueStr.split("\t");
-        
+        String[] valueArray = valueStr.split("\t"); 
         if (valueArray.length == 2) { // candidate feature information 
             context.write(new LongWritable(
                     Long.parseLong(valueArray[0])), 
                     new Text(valueArray[1]));
-        } else if (valueArray.length == 3) { // recommend pair
+        } else if (valueArray.length == 3) { // target with the feature
             context.write(
                     new LongWritable(
                             Long.parseLong(valueArray[0])), 

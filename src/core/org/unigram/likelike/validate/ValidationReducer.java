@@ -55,7 +55,6 @@ public class ValidationReducer extends
                 = this.calcCosine(candidateFeature, targetFeature);
 
             if (result >= threshold) {
-                /* TODO output the features with related examples */ 
                 context.write(candidate, new Text(targetIdStr));
             }
         }

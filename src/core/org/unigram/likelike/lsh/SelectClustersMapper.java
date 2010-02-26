@@ -127,11 +127,11 @@ public class SelectClustersMapper extends
     /** Set of hash seeds. */
     private long[] seedsAry; 
 
-    /** symbol: hash seed. */
+    /** Symbol: hash seed. */
     public static final String MINWISE_HASH_SEEDS
         = "likelike.minwise.hash.seedS";
     
-    /** default: hash seed. */
+    /** Default: hash seed. */
     public static final String DEFAULT_MINWISE_HASH_SEEDS    
         = "1";        
     

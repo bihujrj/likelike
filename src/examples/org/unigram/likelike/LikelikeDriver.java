@@ -35,7 +35,8 @@ public final class LikelikeDriver {
             pgd.addClass("lsh", LSHRecommendations.class,
                     "create recommendations.");
             pgd.addClass("validate", Validation.class,
-                    "validate the result recommended pairs with cosine similarity.");            
+                    "validate the result recommended pairs " +
+                    "with cosine similarity.");            
             pgd.driver(argv);
             exitCode = 0;
         } catch (Throwable e) {

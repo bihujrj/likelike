@@ -110,26 +110,29 @@ public class LSHRecommendations extends
             } 
         }
         
-        String keysStr = this.setHashKeys(iterate, conf);
-        Counters counters = this.extractClusters(inputFile, 
-                clusterDir, conf);
-        this.setResultConf(counters, conf);
+        this.setHashKeys(iterate, inputFile, conf);
+        this.extractClusters(inputFile, clusterDir, conf);
         this.getRecommendations(clusterDir, 
                 outputPrefix, conf, FileSystem.get(conf));
-        this.saveKeys(keysStr.toString(), inputFile, conf);
+
         FsUtil.clean(FileSystem.get(conf), clusterDir);        
         return 0;
     }
   
-    private String setHashKeys(int iterate, Configuration conf) {
-        StringBuffer keysStr = new StringBuffer(); 
+    private String setHashKeys(int iterate, 
+        String inputFile, Configuration conf) throws IOException {
+        
+        StringBuffer keysStrBuffer = new StringBuffer(); 
         for (int i =0; i < iterate; i++) {
             Long hashKey = this.rand.nextLong();
-            keysStr.append(hashKey.toString() + ":");
+            keysStrBuffer.append(hashKey.toString() + ":");
         }
         conf.set(SelectClustersMapper.MINWISE_HASH_SEEDS, 
-                keysStr.toString());
-        return keysStr.toString();
+                keysStrBuffer.toString());
+        
+        String keysStr = keysStrBuffer.toString();
+        this.saveKeys(keysStr, inputFile, conf);        
+        return keysStr;
     }
 
     private void setResultConf(Counters counters, Configuration conf) {
@@ -199,7 +202,7 @@ public class LSHRecommendations extends
         return job.waitForCompletion(true);        
     }
 
-    private Counters extractClusters(String inputFile, 
+    private boolean extractClusters(String inputFile, 
             String clusterFile,
             Configuration conf) throws IOException, 
             InterruptedException, ClassNotFoundException {
@@ -224,8 +227,9 @@ public class LSHRecommendations extends
                 conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
-        job.waitForCompletion(true);
-        return job.getCounters();
+        boolean result =  job.waitForCompletion(true);
+        this.setResultConf(job.getCounters(), conf);        
+        return result;
     }
 
 
