@@ -1,10 +1,6 @@
-package org.unigram.likelike.validate;
+package org.unigram.likelike.feature;
 
 import java.io.IOException;
-import java.util.Vector;
-import java.util.logging.Logger;
-
-import javax.print.attribute.standard.OutputDeviceAssigned;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -12,32 +8,34 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+
 import org.unigram.likelike.common.FsUtil;
 import org.unigram.likelike.common.LikelikeConstants;
-import org.unigram.likelike.util.AddFeatureMapper;
-import org.unigram.likelike.util.AddFeatureReducer;
 import org.unigram.likelike.util.IdentityReducer;
 import org.unigram.likelike.util.InverseMapper;
+import org.unigram.likelike.util.AddFeatureMapper;
+import org.unigram.likelike.util.AddFeatureReducer;
 
-public class Validation extends Configured implements Tool {
+public class FeatureExtraction  extends Configured 
+    implements Tool {
 
     @Override
     public int run(String[] args) throws Exception {
         Configuration conf = getConf();
-        return this.run(args, conf);        
+        return this.run(args, conf);   
     }
 
+    
     public int run(String[] args, Configuration conf) 
-    throws Exception {
+        throws IOException, InterruptedException, ClassNotFoundException {
         
         String recommendDir = "";
+        String inversedDir = "";
         String addedFeatureDir = "";
         String featureDir = "";
         String outputDir = "";
@@ -48,31 +46,55 @@ public class Validation extends Configured implements Tool {
         for (int i = 0; i < args.length; ++i) {
             if ("-recommend".equals(args[i])) {
                 recommendDir = args[++i];
+                inversedDir = recommendDir + ".inv";
                 addedFeatureDir = recommendDir + ".feature";
             } else if ("-output".equals(args[i])) {
                 outputDir = args[++i];
                 tmpOutputDir = outputDir + ".tmp";
             } else if ("-feature".equals(args[i])) {
                 featureDir = args[++i];
-            } else if ("-threshold".equals(args[i])) {
-                conf.setFloat(ValidationConstants.VALIDATION_THRESHOLD, 
-                        Float.parseFloat(args[++i]));                
             } 
         }
-
-        this.addTargetFeatures(recommendDir, 
-                addedFeatureDir, featureDir, conf);
         
-        this.validate(addedFeatureDir, 
-                    tmpOutputDir, featureDir, conf);
+        this.inverse(recommendDir, inversedDir, conf);
+        this.addFeatures(inversedDir, addedFeatureDir, featureDir, conf);
         
-        this.inverse(tmpOutputDir, outputDir, conf);
         
-        FsUtil.clean(this.fs, tmpOutputDir);
+        this.relatedFeatureExtraction(addedFeatureDir, 
+                outputDir, featureDir, conf);
+        
+        FsUtil.clean(this.fs, addedFeatureDir, inversedDir);
         
         return 0;
-    }    
-    
+    }        
+
+    private boolean relatedFeatureExtraction(String addedFeatureDir,
+            String outputDir, String featureDir, Configuration conf) 
+           throws  IOException, InterruptedException, ClassNotFoundException {
+        Path addedfeaturePath = new Path(addedFeatureDir);
+        Path outputPath = new Path(outputDir);
+        Path featurePath = new Path(featureDir);
+        FsUtil.checkPath(outputPath, this.fs);
+        
+        Job job = new Job(conf);
+        job.setJarByClass(FeatureExtraction.class);
+        FileInputFormat.addInputPath(job, addedfeaturePath);
+        FileInputFormat.addInputPath(job, featurePath);
+        FileOutputFormat.setOutputPath(job, outputPath);
+        job.setMapperClass(FeatureExtractionMapper.class); 
+        job.setReducerClass(FeatureExtractionReducer.class);
+        job.setMapOutputKeyClass(LongWritable.class);
+        job.setMapOutputValueClass(Text.class);
+        job.setOutputKeyClass(LongWritable.class);
+        job.setOutputValueClass(Text.class);
+        job.setNumReduceTasks(
+                conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
+                LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
+
+        return job.waitForCompletion(true);            
+    }
+
+
     private boolean inverse(String inputDir, String outputDir,
             Configuration conf) 
     throws IOException, InterruptedException, ClassNotFoundException {
@@ -81,7 +103,7 @@ public class Validation extends Configured implements Tool {
         FsUtil.checkPath(outputPath, this.fs);
         
         Job job = new Job(conf);
-        job.setJarByClass(Validation.class);
+        job.setJarByClass(FeatureExtraction.class);
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
         job.setMapperClass(InverseMapper.class); 
@@ -95,36 +117,9 @@ public class Validation extends Configured implements Tool {
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);
-    }
+    }    
 
-    private boolean validate(String addedFeatureDir, String outputDir,
-            String featureDir, Configuration conf) 
-    throws IOException, InterruptedException, ClassNotFoundException {
-        Path addedfeaturePath = new Path(addedFeatureDir);
-        Path outputPath = new Path(outputDir);
-        Path featurePath = new Path(featureDir);
-        FsUtil.checkPath(outputPath, this.fs);
-        
-        Job job = new Job(conf);
-        job.setJarByClass(Validation.class);
-        FileInputFormat.addInputPath(job, addedfeaturePath);
-        FileInputFormat.addInputPath(job, featurePath);
-        FileOutputFormat.setOutputPath(job, outputPath);
-        job.setMapperClass(ValidationMapper.class); 
-        job.setReducerClass(ValidationReducer.class);
-        job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(Text.class);
-        job.setOutputKeyClass(LongWritable.class);
-        job.setOutputValueClass(Text.class);
-        job.setNumReduceTasks(
-                conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
-                LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
-
-        return job.waitForCompletion(true);                  
-        
-    }
-
-    private boolean addTargetFeatures(String recommendDir, 
+    private boolean addFeatures(String recommendDir, 
             String outputFile, String featureDir,
             Configuration conf) throws 
             IOException, InterruptedException, ClassNotFoundException {
@@ -134,7 +129,7 @@ public class Validation extends Configured implements Tool {
         FsUtil.checkPath(outputPath, this.fs);
 
         Job job = new Job(conf);
-        job.setJarByClass(Validation.class);
+        job.setJarByClass(FeatureExtraction.class);
         FileInputFormat.addInputPath(job, recommendPath);
         FileInputFormat.addInputPath(job, featurePath);
         FileOutputFormat.setOutputPath(job, outputPath);
@@ -143,14 +138,16 @@ public class Validation extends Configured implements Tool {
         job.setMapOutputKeyClass(LongWritable.class);
         job.setMapOutputValueClass(Text.class);
         job.setOutputKeyClass(LongWritable.class);
-        job.setOutputValueClass(Text.class);
+        job.setOutputValueClass(LongWritable.class);
         job.setNumReduceTasks(
                 conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);          
-    }
-
+    }    
+    
+    
+    
     /**
      * Main method.
      *
@@ -160,9 +157,10 @@ public class Validation extends Configured implements Tool {
     public static void main(final String[] args)
     throws Exception {
         int exitCode = ToolRunner.run(
-                new Validation(), args);
+                new FeatureExtraction(), args);
         System.exit(exitCode);
     }
     
     private FileSystem fs = null;
+    
 }
