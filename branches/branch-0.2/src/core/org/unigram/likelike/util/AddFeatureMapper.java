@@ -6,7 +6,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-public class AddTargetFeatureMapper extends
+public class AddFeatureMapper extends
         Mapper<LongWritable, Text, LongWritable, Text> {
     
     @Override
