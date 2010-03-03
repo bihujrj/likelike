@@ -42,35 +42,34 @@ public class FeatureExtractionReducer extends
                     featureCount.put(demension, new Long(1));
                 }
             }
-            
-            /* sort by value and then output */
-            ArrayList<Map.Entry> array 
-                = new ArrayList<Map.Entry>(featureCount.entrySet());
-            Collections.sort(array,new Comparator<Object>(){
-                public int compare(Object o1, Object o2){
-                    Map.Entry e1 =(Map.Entry)o1;
-                    Map.Entry e2 =(Map.Entry)o2;
-                    Long e1Value = (Long) e1.getValue();
-                    Long e2Value = (Long) e2.getValue();
-                    return (e2Value.compareTo(e1Value));
-                }
-            });
-            
-            
-            demensions = featureCount.keySet();
-            StringBuffer rtString = new StringBuffer();            
-            Iterator it = array.iterator();
-            int i = 0;
-            while(it.hasNext()) {
-                if (i >= this.maxOutputSize) { // TODO to be parameterized
-                    return;
-                }
-                Map.Entry obj = (Map.Entry) it.next();
+        }
+
+        /* sort by value and then output */
+        ArrayList<Map.Entry> array 
+            = new ArrayList<Map.Entry>(featureCount.entrySet());
+        Collections.sort(array,new Comparator<Object>(){
+            public int compare(Object o1, Object o2){
+                Map.Entry e1 =(Map.Entry)o1;
+                Map.Entry e2 =(Map.Entry)o2;
+                Long e1Value = (Long) e1.getValue();
+                Long e2Value = (Long) e2.getValue();
+                return (e2Value.compareTo(e1Value));
+            }
+        });
+        
+        StringBuffer rtString = new StringBuffer();            
+        Iterator it = array.iterator();
+        int i = 0;
+        while(it.hasNext()) {
+            if (i >= this.maxOutputSize) { // TODO to be parameterized
+                return;
+            }
+            Map.Entry obj = (Map.Entry) it.next();
                 rtString.append((Long) obj.getKey());
                 rtString.append(" ");
-            }
-            context.write(target, new Text(rtString.toString()));
         }
+        context.write(target, new Text(rtString.toString()));
+        
     }
     
     private final Map<Long, Long> getFeature(
