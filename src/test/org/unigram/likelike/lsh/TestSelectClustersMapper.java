@@ -27,8 +27,6 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.unigram.likelike.common.LikelikeConstants;
-import org.unigram.likelike.common.SeedClusterId;
-import org.unigram.likelike.lsh.SelectClustersMapper;
 import org.unigram.likelike.lsh.function.CalcHashValue;
 import org.unigram.likelike.lsh.function.MinWiseFunction;
 
@@ -43,12 +41,13 @@ public class TestSelectClustersMapper extends TestCase {
     @SuppressWarnings("unchecked")
     public void testMap() {
 
-        CalcHashValue calcHash = new CalcHashValue();         
+        CalcHashValue calcHash = new CalcHashValue(
+                MinWiseFunction.DEFAULT_MINWISE_HASH_SEED);         
 
         SelectClustersMapper mapper = new SelectClustersMapper();        
-        Mapper<LongWritable, Text, SeedClusterId, LongWritable>.Context mock_context
+        Mapper<LongWritable, Text, LongWritable, LongWritable>.Context mock_context
             = mock(Mapper.Context.class);
-        mapper.setup(mock_context);                         
+        mapper.setup(mock_context);
         
         /**/ 
         try {
@@ -70,13 +69,13 @@ public class TestSelectClustersMapper extends TestCase {
          int[] features = {1, 2, 43, 21}; 
          
          for (int i = 0; i<features.length; i++ ) {
-             hashedFeatureVector.put(calcHash.run((long) features[i], 1L), 
+             hashedFeatureVector.put(calcHash.run(features[i]), 
                          new Long(1));
          }         
          
          try {
              verify(mock_context, times(1)).write(
-                     new SeedClusterId(1L, hashedFeatureVector.firstKey()),
+                     new LongWritable(hashedFeatureVector.firstKey()),
                      new LongWritable(327));
          } catch (Exception e) {
              TestCase.fail();

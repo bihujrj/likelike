@@ -25,27 +25,31 @@ import org.apache.hadoop.io.LongWritable;
 import org.unigram.likelike.common.LikelikeConstants;
 
 /**
- * 
+ * MinWiseFunction.
  */
-public class MinWiseFunction implements IHashFunction {
-
+public class MinWiseFunction 
+    implements IHashFunction {
+    
     /**
+     * Return cluster id on the hash value for input feature vector.
      * 
+     * @param featureVector feature vector
+     * @return cluster id
      */
     @Override
     public LongWritable returnClusterId(
-            Map<Long,Long> featureVector, long seed) {
+        Map<Long,Long> featureVector, long seed) {
         long clusterId = 0;
         
-        TreeMap<Long,Long> hashedFeatureVector 
-            = new TreeMap<Long,Long>(); // key: hashed, value: id
+        TreeMap<Long, Long> hashedFeatureVector 
+            = new TreeMap<Long, Long>(); // key: hashed, value: id
         
         for (Long key : featureVector.keySet()) {
             hashedFeatureVector.put(this.calcHash.run(key, seed), 
                         new Long(featureVector.get(key)));
         }
         
-        for (int i = 0; i < this.depth; i ++ ) {
+        for (int i = 0; i < this.depth; i++) {
             if (hashedFeatureVector.size() <= 0) {
                 return new LongWritable(clusterId);
             }
@@ -59,9 +63,9 @@ public class MinWiseFunction implements IHashFunction {
     /**
      * Constructor.
      * 
-     * @param conf get parameters.
+     * @param conf get parameters
      */
-    public MinWiseFunction(Configuration conf) {
+    public MinWiseFunction(final Configuration conf) {
         this.calcHash = new CalcHashValue();
         this.depth = conf.getInt(LikelikeConstants.FEATURE_DEPTH,
                 LikelikeConstants.DEFAULT_FEATURE_DEPTH);
@@ -73,12 +77,11 @@ public class MinWiseFunction implements IHashFunction {
         this.depth = 0;
         this.calcHash = null;
     };
-    
-    
-    /** Depth of cluster. */    
+
+    /** Depth of cluster. */
     private final int depth;
     
-    /** Calculator of hashed value */
+    /** Calculator of hashed value. */
     private final CalcHashValue calcHash;
     
 }

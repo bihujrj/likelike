@@ -19,11 +19,9 @@ package org.unigram.likelike.lsh;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
@@ -31,10 +29,22 @@ import org.unigram.likelike.common.LikelikeConstants;
 import org.unigram.likelike.common.RelatedUsersWritable;
 import org.unigram.likelike.common.SeedClusterId;
 
+/**
+ * SelectClustersReducer. 
+ */
 public class SelectClustersReducer extends
         Reducer<SeedClusterId, LongWritable,
         SeedClusterId, RelatedUsersWritable> {
     
+    /**
+     * Reduce.
+     * 
+     * @param key cluster id
+     * @param values user names
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public void reduce(final SeedClusterId key,
             final Iterable<LongWritable> values,
@@ -59,6 +69,10 @@ public class SelectClustersReducer extends
         }
     }
     
+    /**
+     * setup.
+     * @param context -
+     */
     @Override
     public final void setup(final Context context) {
         Configuration jc = context.getConfiguration();

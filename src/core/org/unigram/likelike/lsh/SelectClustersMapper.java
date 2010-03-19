@@ -32,12 +32,18 @@ import org.unigram.likelike.common.LikelikeConstants;
 import org.unigram.likelike.common.SeedClusterId;
 import org.unigram.likelike.lsh.function.IHashFunction;
 
+/**
+ * SelectClustersMapper.
+ */
 public class SelectClustersMapper extends
         Mapper<LongWritable, Text, SeedClusterId, LongWritable> {
-
     /**
+     * map.
      * @param key dummy
-     * @param value containing id and the features 
+     * @param value containing id and the features
+     * @param context context 
+     * @exception IOException -
+     * @exception InterruptedException -
      */
     @Override
     public final void map(final LongWritable key,
@@ -65,8 +71,14 @@ public class SelectClustersMapper extends
         }
     }
     
-    private final Map<Long, Long> extractFeatures(
-            String featureStr) {
+    /**
+     * Extract features from feature string.
+     * 
+     * @param featureStr string containing feature information
+     * @return map containing feature and the value
+     */
+    private Map<Long, Long> extractFeatures(
+            final String featureStr) {
         Map<Long, Long> rtMap = new HashMap<Long, Long>();
         String[] featureArray = featureStr.split(" ");
         for (int i=0; i<featureArray.length; i++) {
@@ -77,6 +89,11 @@ public class SelectClustersMapper extends
         return rtMap;
     }
     
+    
+    /**
+     * setup.
+     * @param context context
+     */
     public final void setup(final Context context) {
         Configuration jc = context.getConfiguration();
 
