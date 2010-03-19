@@ -64,15 +64,11 @@ public class LSHRecommendations extends
     /** random generator. */
     Random rand = new Random();
     
-    static {
-        Configuration.addDefaultResource("conf/likelike-default.xml");
-        Configuration.addDefaultResource("conf/likelike-site.xml");        
-    }
-
     public final int run(final String[] args) 
     throws IOException,
         InterruptedException, 
         ClassNotFoundException, Exception {
+        this.setDefaultConfiguration();
         Configuration conf = getConf();
         return this.run(args, conf);
     }
@@ -245,5 +241,12 @@ public class LSHRecommendations extends
                 new LSHRecommendations(), args);
         System.exit(exitCode);
     }
-     
+
+    private void setDefaultConfiguration()  {
+        Configuration.addDefaultResource("conf/likelike-default.xml");
+        Configuration.addDefaultResource("conf/likelike-site.xml");
+        return;
+    }
+    
+    
 }
