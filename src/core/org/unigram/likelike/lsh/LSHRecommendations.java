@@ -16,22 +16,17 @@
  */
 package org.unigram.likelike.lsh;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Random;
 import java.util.Vector;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.LongWritable;
 
 import org.apache.hadoop.mapreduce.Counters;
@@ -57,12 +52,22 @@ public class LSHRecommendations extends
     Configured implements Tool {
     
     /** logger. */
-    LikelikeLogger logger 
+    private final LikelikeLogger logger 
         = LikelikeLogger.getLogger();
 
     /** random generator. */
-    Random rand = new Random();
+    private final Random rand = new Random();
     
+    /**
+     * Run from ToolRunner.
+     *  
+     * @param args contains arguments
+     * @return 0 when succeeded.
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     * @throws Exception -
+     */
     public final int run(final String[] args) 
     throws IOException,
         InterruptedException, 
@@ -72,8 +77,14 @@ public class LSHRecommendations extends
         return this.run(args, conf);
     }
     
-
-    public int run(String[] args, Configuration conf) 
+    /**
+     * Run.
+     * @param args arguments
+     * @param conf configuration
+     * @return 0 when succeeded
+     * @throws Exception
+     */
+    public int run(final String[] args, final Configuration conf) 
     throws Exception {
 
         String inputFile = "";
@@ -111,7 +122,7 @@ public class LSHRecommendations extends
         int numReducers = conf.getInt(
                 LikelikeConstants.NUMBER_OF_REDUCES,
                     LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES);
-                logger.logInfo("Number of reducers: " + numReducers);
+                this.logger.logInfo("Number of reducers: " + numReducers);
         
         Vector<Long> keys = new Vector<Long>();
         
@@ -121,7 +132,7 @@ public class LSHRecommendations extends
         for (int i =0; i < iterate; i++) {
             String clusterOutputFile = new String(
                     clusterDir+"/"+"iter"+Integer.toString(i));
-            logger.logInfo("Extracting clusters: " + clusterOutputFile);
+            this.logger.logInfo("Extracting clusters: " + clusterOutputFile);
             Long hashKey = this.rand.nextLong();
             conf.setLong(MinWiseFunction.MINWISE_HASH_SEED, hashKey);
             keys.add(hashKey);
@@ -141,7 +152,14 @@ public class LSHRecommendations extends
         return 0;
     }
   
-    private void setResultConf(Counters counters, Configuration conf) {
+    /**
+     * Add the configuration information from the result of 
+     * extract candidates to conf.
+     * 
+     * @param counters contains counter
+     * @param conf configuration
+     */
+    private void setResultConf(final Counters counters, final Configuration conf) {
         conf.setLong(LikelikeConstants.LIKELIKE_INPUT_RECORDS, 
                 counters.findCounter(
                         LikelikeConstants.COUNTER_GROUP, 
@@ -151,9 +169,17 @@ public class LSHRecommendations extends
                         LikelikeConstants.LIKELIKE_INPUT_RECORDS, -1));
     }
 
-
-    private void saveKeys(Vector<Long> keys, 
-            String inputFile, Configuration conf) 
+    /**
+     * Save keys for hash seed.
+     * 
+     * @param keys keys used as hash seed.
+     * @param inputFile input file name of this program. The output file 
+     * name for saving kesy is input file name + ".keys." 
+     * @param conf configuration 
+     * @throws IOException -
+     */
+    private void saveKeys(final Vector<Long> keys, 
+            final String inputFile, final Configuration conf) 
     throws IOException {
         /* save to local fs */
         String tempKeyFile = new String("keys.tmp");
@@ -184,12 +210,11 @@ public class LSHRecommendations extends
     }
 
 
-    private boolean getRecommendations(String inputDir,
-            String outputFile, Configuration 
-            conf, FileSystem fs) 
+    private boolean getRecommendations(final String inputDir,
+            final String outputFile, final Configuration conf, FileSystem fs) 
     throws IOException, InterruptedException, 
     ClassNotFoundException {
-        logger.logInfo("Extracting recommendation to " + inputDir);
+        this.logger.logInfo("Extracting recommendation to " + inputDir);
         Path inputPath = new Path(inputDir);
         Path outputPath = new Path(outputFile);
         FsUtil.checkPath(outputPath, FileSystem.get(conf));
@@ -211,9 +236,9 @@ public class LSHRecommendations extends
         return job.waitForCompletion(true);        
     }
 
-    private Counters extractClusters(String inputFile, 
-            String clusterFile,
-            Configuration conf) throws IOException, 
+    private Counters extractClusters(final String inputFile, 
+            final String clusterFile, final Configuration conf) 
+    throws IOException, 
             InterruptedException, ClassNotFoundException {
         
         
@@ -255,11 +280,12 @@ public class LSHRecommendations extends
         System.exit(exitCode);
     }
 
+    /**
+     * Add configuration from xml files.
+     */
     private void setDefaultConfiguration()  {
         Configuration.addDefaultResource("conf/likelike-default.xml");
         Configuration.addDefaultResource("conf/likelike-site.xml");
-        return;
     }
-    
     
 }

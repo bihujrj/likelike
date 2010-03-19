@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package org.unigram.likelike.lsh
-;
+package org.unigram.likelike.lsh;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.io.LongWritable;
@@ -26,16 +24,26 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.RelatedUsersWritable;
 
+/**
+ * Mapper. 
+ */
 public class GetRecommendationsMapper extends
         Mapper<LongWritable, RelatedUsersWritable, LongWritable, Candidate> {
     
+    /**
+     * Map method.
+     * 
+     * @param key dummy
+     * @param value related users
+     * @param context for writing
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public final void map(final LongWritable key,
             final RelatedUsersWritable value, final Context context) 
     throws IOException, InterruptedException {
         List<LongWritable> relatedUsers = value.getRelatedUsers();
-        
-        //System.out.println("relatedUsers.size():" + relatedUsers.size());
         
         for (int i = 0; i < relatedUsers.size(); i++) {
             LongWritable targetId 
