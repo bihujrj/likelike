@@ -1,8 +1,6 @@
 package org.unigram.likelike.validate;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -16,8 +14,12 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
+/**
+ *
+ */
 public class ValidationReducer extends
     Reducer<LongWritable, Text, LongWritable, Text> {
+
 
     /** 
      * value candidate
@@ -60,8 +62,15 @@ public class ValidationReducer extends
         }
     }
 
-    private double calcCosine(Map<Long, Long> vectorOne,
-            Map<Long, Long> vectorTwo) {
+    /**
+     * calculate cosine between two input vectors.
+     *  
+     * @param vectorOne vector
+     * @param vectorTwo other vector
+     * @return cosine value
+     */
+    private double calcCosine(final Map<Long, Long> vectorOne,
+            final Map<Long, Long> vectorTwo) {
         double ip = (double) calcInnerProduct(vectorOne, vectorTwo);
         double normOne = (double) calcNorm(vectorOne);
         double normTwo = (double) calcNorm(vectorTwo);
@@ -72,15 +81,14 @@ public class ValidationReducer extends
         } else {
             return (ip / norm);
         }
-
     }    
     
-    /**                                                                                                                                                      
-     * Calculate inner product between two vectors.                                                                                                          
-     *                                                                                                                                                       
-     * @param vectorOne vector extracted first query string                                                                                                  
-     * @param vectorTwo vector extracted second query string                                                                                                 
-     * @return inner product between vectorOne and vectorTwo                                                                                                 
+    /**
+     * Calculate inner product between two vectors.
+     *
+     * @param vectorOne vector extracted first query string
+     * @param vectorTwo vector extracted second query string
+     * @return inner product between vectorOne and vectorTwo
      */
     private long calcInnerProduct(final Map vectorOne,
             final Map vectorTwo) {
@@ -98,11 +106,11 @@ public class ValidationReducer extends
         return ip;
     }
 
-    /**                                                                                                                                                      
-     * Calculate norm for vector.                                                                                                                            
-     *                                                                                                                                                       
-     * @param vector character based query string vector                                                                                                     
-     * @return norm                                                                                                                                          
+    /**
+     * Calculate norm for vector.
+     * 
+     * @param vector character based query string vector
+     * @return norm
      */
     private double calcNorm(final Map vector) {
         long norm = 0;
@@ -117,9 +125,14 @@ public class ValidationReducer extends
         return Math.sqrt(norm);
     }
 
-    
-    private final Map<Long, Long> getFeature(
-            String featureStr) {
+    /**
+     * Create and return feature vector from input feature string.
+     * 
+     * @param featureStr feature string
+     * @return feature vector
+     */
+    private Map<Long, Long> getFeature(
+            final String featureStr) {
         Map<Long, Long> rtMap = new HashMap<Long, Long>();
         String[] featureArray = featureStr.split(" ");
         for (int i=0; i<featureArray.length; i++) {
@@ -130,7 +143,10 @@ public class ValidationReducer extends
         return rtMap;
     }    
     
-    
+    /**
+     * setup.
+     * @param context -
+     */
     public final void setup(final Context context) {
         Configuration jc = context.getConfiguration();
         this.threshold = jc.getFloat(
@@ -138,5 +154,6 @@ public class ValidationReducer extends
                 ValidationConstants.DEFAULT_VALIDATION_THRESHOLD);        
     }    
     
+    /** minimum cosine value. */
     private float threshold;
 }

@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and 
  * limitations under the License.
  */
-package org.unigram.likelike.lsh
-;
+package org.unigram.likelike.lsh;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.io.LongWritable;
@@ -27,9 +25,21 @@ import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.RelatedUsersWritable;
 import org.unigram.likelike.common.SeedClusterId;
 
+/**
+ * Mapper. 
+ */
 public class GetRecommendationsMapper extends
         Mapper<SeedClusterId, RelatedUsersWritable, LongWritable, Candidate> {
     
+    /**
+     * Map method.
+     * 
+     * @param key dummy
+     * @param value related users
+     * @param context for writing
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public final void map(final SeedClusterId key,
             final RelatedUsersWritable value, final Context context) 
@@ -49,6 +59,7 @@ public class GetRecommendationsMapper extends
             candidateIndex < relatedUsers.size(); candidateIndex++) {
             if (targetIndex == candidateIndex) {
                 continue;
+
             }
             LongWritable candidateId 
                 = new LongWritable(relatedUsers.get(candidateIndex).get());

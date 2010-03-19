@@ -1,10 +1,7 @@
 package org.unigram.likelike.validate;
 
 import java.io.IOException;
-import java.util.Vector;
 import java.util.logging.Logger;
-
-import javax.print.attribute.standard.OutputDeviceAssigned;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -12,10 +9,8 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
@@ -26,15 +21,31 @@ import org.unigram.likelike.util.AddFeatureReducer;
 import org.unigram.likelike.util.IdentityReducer;
 import org.unigram.likelike.util.InverseMapper;
 
+/**
+ *
+ */
 public class Validation extends Configured implements Tool {
-
+    
+    /**
+     * run. 
+     * @param args -
+     * @return 0
+     * @throws Exception -
+     */
     @Override
-    public int run(String[] args) throws Exception {
+    public int run(final String[] args) throws Exception {
         Configuration conf = getConf();
         return this.run(args, conf);        
     }
 
-    public int run(String[] args, Configuration conf) 
+    /**
+     * run.
+     * @param args arguments
+     * @param conf configuration
+     * @return -
+     * @throws Exception -
+     */
+    public int run(final String[] args, final Configuration conf) 
     throws Exception {
         
         String recommendDir = "";
@@ -72,9 +83,11 @@ public class Validation extends Configured implements Tool {
         
         return 0;
     }    
+
     
     private boolean inverse(String inputDir, String outputDir,
             Configuration conf) 
+
     throws IOException, InterruptedException, ClassNotFoundException {
         Path inputPath = new Path(inputDir);
         Path outputPath = new Path(outputDir);
@@ -96,6 +109,7 @@ public class Validation extends Configured implements Tool {
 
         return job.waitForCompletion(true);
     }
+
 
     private boolean validate(String addedFeatureDir, String outputDir,
             String featureDir, Configuration conf) 
@@ -121,8 +135,8 @@ public class Validation extends Configured implements Tool {
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);                  
-        
     }
+
 
     private boolean addTargetFeatures(String recommendDir, 
             String outputFile, String featureDir,

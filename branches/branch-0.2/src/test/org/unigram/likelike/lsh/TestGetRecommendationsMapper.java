@@ -25,7 +25,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.RelatedUsersWritable;
-import org.unigram.likelike.common.SeedClusterId;
 import org.unigram.likelike.lsh.GetRecommendationsMapper;
 
 import junit.framework.TestCase;
@@ -46,7 +45,7 @@ public class TestGetRecommendationsMapper extends TestCase {
         GetRecommendationsMapper mapper =
             new GetRecommendationsMapper();
 
-        Mapper<SeedClusterId, RelatedUsersWritable, LongWritable, 
+        Mapper<LongWritable, RelatedUsersWritable, LongWritable, 
         Candidate>.Context mock_context
             = mock(Mapper.Context.class);        
         
@@ -68,8 +67,7 @@ public class TestGetRecommendationsMapper extends TestCase {
              * key - hashed clusterId
              * value - example ids exist in the cluster with clusterId. 
              */
-            mapper.map(new SeedClusterId(hashedClusterId.get(), 1L),  
-                    new RelatedUsersWritable(value), mock_context);
+            mapper.map(hashedClusterId, new RelatedUsersWritable(value), mock_context);
         } catch (IOException e) {
             e.printStackTrace();
             TestCase.fail();
