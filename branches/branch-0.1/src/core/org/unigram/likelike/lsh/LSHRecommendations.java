@@ -82,7 +82,7 @@ public class LSHRecommendations extends
      * @param args arguments
      * @param conf configuration
      * @return 0 when succeeded
-     * @throws Exception
+     * @throws Exception -
      */
     public int run(final String[] args, final Configuration conf) 
     throws Exception {
@@ -159,7 +159,8 @@ public class LSHRecommendations extends
      * @param counters contains counter
      * @param conf configuration
      */
-    private void setResultConf(final Counters counters, final Configuration conf) {
+    private void setResultConf(final Counters counters, 
+            final Configuration conf) {
         conf.setLong(LikelikeConstants.LIKELIKE_INPUT_RECORDS, 
                 counters.findCounter(
                         LikelikeConstants.COUNTER_GROUP, 
@@ -209,9 +210,21 @@ public class LSHRecommendations extends
         return;
     }
 
-
+    /**
+     * Get items to be recommended.
+     * 
+     * @param inputDir input 
+     * @param outputFile output
+     * @param conf configuration
+     * @param fs file system
+     * @return true when succeeded otherwise false
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
     private boolean getRecommendations(final String inputDir,
-            final String outputFile, final Configuration conf, FileSystem fs) 
+            final String outputFile, final Configuration conf, 
+            final FileSystem fs) 
     throws IOException, InterruptedException, 
     ClassNotFoundException {
         this.logger.logInfo("Extracting recommendation to " + inputDir);
@@ -236,6 +249,17 @@ public class LSHRecommendations extends
         return job.waitForCompletion(true);        
     }
 
+    /**
+     * Extract clusters.
+     * 
+     * @param inputFile input file name 
+     * @param clusterFile output file
+     * @param conf configuration 
+     * @return Counters object containing the statistics for the input file
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
     private Counters extractClusters(final String inputFile, 
             final String clusterFile, final Configuration conf) 
     throws IOException, 

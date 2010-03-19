@@ -19,21 +19,31 @@ package org.unigram.likelike.lsh;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
 import org.unigram.likelike.common.LikelikeConstants;
 import org.unigram.likelike.common.RelatedUsersWritable;
 
+/**
+ * SelectClustersReducer. 
+ */
 public class SelectClustersReducer extends
         Reducer<LongWritable, LongWritable,
         LongWritable, RelatedUsersWritable> {
     
+    /**
+     * Reduce.
+     * 
+     * @param key cluster id
+     * @param values user names
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public void reduce(final LongWritable key,
             final Iterable<LongWritable> values,
@@ -57,6 +67,10 @@ public class SelectClustersReducer extends
         }
     }
     
+    /**
+     * setup.
+     * @param context -
+     */
     @Override
     public final void setup(final Context context) {
         Configuration jc = context.getConfiguration();
@@ -71,9 +85,9 @@ public class SelectClustersReducer extends
                 LikelikeConstants.DEFAULT_MIN_CLUSTER_SIZE);                
     }
     
-    /** maximum number of examples in a cluster */
+    /** maximum number of examples in a cluster. */
     private long maximumClusterSize;
     
-    /** minimum number of examples in a cluster */    
+    /** minimum number of examples in a cluster. */    
     private long minimumClusterSize;
 }

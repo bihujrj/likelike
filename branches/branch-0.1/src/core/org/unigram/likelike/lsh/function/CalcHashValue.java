@@ -16,11 +16,19 @@
  */
 package org.unigram.likelike.lsh.function;
 
+/**
+ * Calculate the hashed value for input.
+ */
 public class CalcHashValue {
     
-    public CalcHashValue(Long hashSeed) {
-        System.out.println("hashSeed:" + hashSeed);
-        this.hashSeed = hashSeed;
+    /**
+     * Calculate hash value.
+     *  
+     * @param seed seed value
+     */
+    public CalcHashValue(final Long seed) {
+        System.out.println("hashSeed:" + seed);
+        this.hashSeed = seed;
     }
 
     /**
@@ -29,10 +37,10 @@ public class CalcHashValue {
      *  
      * NOTE: applied 64 bit hash function by Thomas Wang.
      * 
-     * @param value
-     * @return
+     * @param value input
+     * @return hashed value
      */
-    public Long run(long value) {  
+    public Long run(final long value) {  
         Long key = (value+hashSeed);
         key = (~key) + (key << 21);
         key = key ^ (key >>> 24);

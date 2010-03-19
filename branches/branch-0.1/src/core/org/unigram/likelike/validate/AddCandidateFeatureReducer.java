@@ -9,9 +9,20 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
 
+/**
+ *
+ */
 public class AddCandidateFeatureReducer extends
         Reducer<LongWritable, Text, LongWritable, Text> {
     
+    /**
+     * reduce.
+     * @param key key 
+     * @param values value
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public void reduce(final LongWritable key,
             final Iterable<Text> values,
@@ -21,7 +32,7 @@ public class AddCandidateFeatureReducer extends
         Text rtValue = null;
         List<Long> candidates = new LinkedList<Long>();
         for (Text v : values) {
-            if (v.find(":") >= 0) { // feature                                                                                                               
+            if (v.find(":") >= 0) { // feature
                 rtValue = new Text(key+"\t"+v);
                 continue;
             }

@@ -6,9 +6,20 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
+/**
+ *
+ */
 public class AddCandidateFeatureMapper extends
         Mapper<LongWritable, Text, LongWritable, Text> {
     
+    /**
+     * map.
+     * @param key dummy
+     * @param value input string
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public final void map(final LongWritable key,
             final Text value, final Context context) 
