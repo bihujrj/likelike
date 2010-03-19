@@ -13,12 +13,24 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
+/**
+ *
+ */
 public class FeatureExtractionReducer extends
         Reducer<LongWritable, Text, LongWritable, Text> {
-
+    
+    /** max number of output features. */
     private int maxOutputSize = 10;
-
+    
     /* TODO refactoring */
+    /**
+     * reduce. 
+     * @param target -
+     * @param candidates -
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */    
     @Override
     public void reduce(final LongWritable target,
             final Iterable<Text> candidates,
@@ -47,8 +59,8 @@ public class FeatureExtractionReducer extends
         /* sort by value and then output */
         ArrayList<Map.Entry> array 
             = new ArrayList<Map.Entry>(featureCount.entrySet());
-        Collections.sort(array,new Comparator<Object>(){
-            public int compare(Object o1, Object o2){
+        Collections.sort(array, new Comparator<Object>(){
+            public int compare(final Object o1, final Object o2){
                 Map.Entry e1 =(Map.Entry)o1;
                 Map.Entry e2 =(Map.Entry)o2;
                 Long e1Value = (Long) e1.getValue();
@@ -72,8 +84,13 @@ public class FeatureExtractionReducer extends
         
     }
     
-    private final Map<Long, Long> getFeature(
-            String featureStr) {
+    /**
+     * getFeature.
+     * @param featureStr feature string.
+     * @return feature map.
+     */
+    private Map<Long, Long> getFeature(
+            final String featureStr) {
         Map<Long, Long> rtMap = new HashMap<Long, Long>();
         String[] featureArray = featureStr.split(" ");
         for (int i=0; i<featureArray.length; i++) {

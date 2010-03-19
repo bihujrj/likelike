@@ -7,9 +7,20 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
+/**
+ *
+ */
 public class InverseMapper extends Mapper<LongWritable, 
     Text, LongWritable, Text> {
-
+    
+    /**
+     * Map method.
+     * @param dummy -
+     * @param value -
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
     @Override
     public final void map(final LongWritable dummy,
             final Text value, final Context context) 

@@ -34,11 +34,12 @@ public class MinWiseFunction
      * Return cluster id on the hash value for input feature vector.
      * 
      * @param featureVector feature vector
+     * @param seed hash seed
      * @return cluster id
      */
     @Override
     public LongWritable returnClusterId(
-        Map<Long,Long> featureVector, long seed) {
+        final Map<Long, Long> featureVector, final long seed) {
         long clusterId = 0;
         
         TreeMap<Long, Long> hashedFeatureVector 
