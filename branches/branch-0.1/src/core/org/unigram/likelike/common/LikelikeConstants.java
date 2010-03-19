@@ -30,40 +30,40 @@ public final class LikelikeConstants {
     /** default: number of reducers. */
     public static final int DEFAULT_NUMBER_OF_REDUCES = 1;
 
-    /** symbol: depth */
+    /** symbol: depth. */
     public static final String FEATURE_DEPTH 
         = "likelike.feature.depth";    
     
-    /** default: feature */
+    /** default: feature. */
     public static final int DEFAULT_FEATURE_DEPTH = 1;    
     
-    /** symbol: hash function */
+    /** symbol: hash function. */
     public static final String HASH_FUNCTION 
         = "likelike.hash.function";    
     
-    /** default: default hash function */
+    /** default: default hash function. */
     public static final String DEFAULT_HASH_FUNCTION 
         = "org.unigram.likelike.lsh.function.MinWiseFunction";
     
-    /** symbol: maximum cluster size */
+    /** symbol: maximum cluster size. */
     public static final String MAX_CLUSTER_SIZE
         = "likelike.max.cluster.size";
     
-    /** symbol: maximum number of recommendation per example */
+    /** symbol: maximum number of recommendation per example. */
     public static final String MAX_OUTPUT_SIZE
         = "likelike.max.output.size";    
     
-    /** default: maximum cluster size */
+    /** default: maximum cluster size. */
     public static final long DEFAULT_MAX_CLUSTER_SIZE  = 300L; 
     
-    /** default: maximum number of output for one example */
+    /** default: maximum number of output for one example. */
     public static final long DEFAULT_MAX_OUTPUT_SIZE  = 10L;
     
-    /** symbol: minimum cluster size */
+    /** symbol: minimum cluster size. */
     public static final String MIN_CLUSTER_SIZE 
         = "likelike.min.cluster.size";
     
-    /** default: minimum cluster size */
+    /** default: minimum cluster size. */
     public static final long DEFAULT_MIN_CLUSTER_SIZE  = 1L;    
     
     /** symbol: logger. */

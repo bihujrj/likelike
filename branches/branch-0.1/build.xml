@@ -254,7 +254,7 @@
 		</taskdef>
 
 		<checkstyle config="${test.src.dir}/checkstyle.xml" classpathref="classpath">
-			<fileset dir="${src.dir}" includes="**/*.java" />
+			<fileset dir="${core.src.dir}" includes="**/*.java" />
 		</checkstyle>
 	</target>
 
