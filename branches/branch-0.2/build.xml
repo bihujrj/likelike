@@ -18,7 +18,7 @@
 	
 <project name="likelike" default="main" xmlns:ivy="antlib:org.apache.ivy.ant">
 
-	<property name="version" value="0.01" />
+	<property name="version" value="0.1" />
 
 	<property name="likelike.jar" value="likelike-${version}.jar" />
 	<property name="likelike-test.jar" value="likelike-${version}-test.jar" />
