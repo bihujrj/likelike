@@ -7,17 +7,26 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
+/**
+ *
+ */
 public class InverseMapper extends Mapper<LongWritable, 
     Text, LongWritable, Text> {
 
+    /**
+     * map.
+     * @param dummy -
+     * @param value -
+     * @param context -
+     * @throws InterruptedException -
+     * @throws IOException -
+     */
     @Override
     public final void map(final LongWritable dummy,
             final Text value, final Context context) 
     throws InterruptedException, IOException {
         String valueStr = value.toString();        
         String[] valueArray = valueStr.split("\t");
-        
-        //System.out.println("key: "+ key+"\tvalueStr: " + valueStr);
         
         if (valueArray.length == 2) {
             context.write(new LongWritable(Long.parseLong(valueArray[1]))

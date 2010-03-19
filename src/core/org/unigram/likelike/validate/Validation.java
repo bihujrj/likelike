@@ -1,9 +1,6 @@
 package org.unigram.likelike.validate;
 
 import java.io.IOException;
-import java.util.Vector;
-
-import javax.print.attribute.standard.OutputDeviceAssigned;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -11,25 +8,39 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
-import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.unigram.likelike.common.FsUtil;
 import org.unigram.likelike.common.LikelikeConstants;
 
+/**
+ *
+ */
 public class Validation extends Configured implements Tool {
-
+    
+    /**
+     * run. 
+     * @param args -
+     * @return 0
+     * @throws Exception -
+     */
     @Override
-    public int run(String[] args) throws Exception {
+    public int run(final String[] args) throws Exception {
         Configuration conf = getConf();
         return this.run(args, conf);        
     }
 
-    public int run(String[] args, Configuration conf) 
+    /**
+     * run.
+     * @param args arguments
+     * @param conf configuration
+     * @return -
+     * @throws Exception -
+     */
+    public int run(final String[] args, final Configuration conf) 
     throws Exception {
         String recommendDir = "";
         String addedFeatureDir = "";
@@ -66,9 +77,21 @@ public class Validation extends Configured implements Tool {
         
         return 0;
     }    
-    
-    private boolean inverse(String inputDir, String outputDir,
-            Configuration conf, FileSystem fs) 
+
+    /**
+     * inverse.
+     * @param inputDir -
+     * @param outputDir -
+     * @param conf -
+     * @param fs -
+     * @return -
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean inverse(final String inputDir, 
+            final String outputDir, final Configuration conf, 
+            final FileSystem fs) 
     throws IOException, InterruptedException, ClassNotFoundException {
         Path inputPath = new Path(inputDir);
         Path outputPath = new Path(outputDir);
@@ -90,8 +113,21 @@ public class Validation extends Configured implements Tool {
         return job.waitForCompletion(true);
     }
 
-    private boolean validate(String addedFeatureDir, String outputDir,
-            String featureDir, Configuration conf, FileSystem fs) 
+    /**
+     * validate.
+     * @param addedFeatureDir -
+     * @param outputDir -
+     * @param featureDir -
+     * @param conf -
+     * @param fs -
+     * @return 0
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean validate(final String addedFeatureDir, 
+            final String outputDir, final String featureDir,
+            final Configuration conf, final FileSystem fs)
     throws IOException, InterruptedException, ClassNotFoundException {
         Path addedfeaturePath = new Path(addedFeatureDir);
         Path outputPath = new Path(outputDir);
@@ -113,12 +149,23 @@ public class Validation extends Configured implements Tool {
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
 
         return job.waitForCompletion(true);                  
-        
     }
-
-    private boolean addCandidateFeatures(String recommendDir, 
-            String outputFile, String featureDir,
-            Configuration conf, FileSystem fs) throws 
+    
+    /**
+     * addCandidateFeatures.
+     * @param recommendDir -
+     * @param outputFile -
+     * @param featureDir -
+     * @param conf -
+     * @param fs -
+     * @return 1
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean addCandidateFeatures(final String recommendDir, 
+            final String outputFile, final String featureDir,
+            final Configuration conf, final FileSystem fs) throws 
             IOException, InterruptedException, ClassNotFoundException {
         Path recommendPath = new Path(recommendDir);
         Path featurePath = new Path(featureDir);

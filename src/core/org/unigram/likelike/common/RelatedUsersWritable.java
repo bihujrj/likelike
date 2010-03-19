@@ -10,24 +10,43 @@ import java.util.List;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Writable;
 
+/**
+ *
+ */
 public class RelatedUsersWritable implements Writable {
 
     /** contains IDs of related users. */
     private List<LongWritable> relatedUsers;
     
-    public RelatedUsersWritable() {
-    }
+    /**
+     * Constructor.
+     */
+    public RelatedUsersWritable() {}
 
-    public RelatedUsersWritable(List<LongWritable> users) {
+    /**
+     * Constructor. 
+     * @param users related users
+     */
+    public RelatedUsersWritable(final List<LongWritable> users) {
         this.relatedUsers = users;
     }
 
+    /**
+     * Get related users.
+     * @return set of related users
+     */
     public List<LongWritable> getRelatedUsers() {
-        return relatedUsers;
+        return this.relatedUsers;
     }
 
+    /**
+     * Create RelatedUsersWritable from input stream.
+     * 
+     * @param in input stream
+     * @throws IOException -
+     */
     @Override
-    public void readFields(DataInput in) throws IOException {
+    public void readFields(final DataInput in) throws IOException {
         this.relatedUsers= new ArrayList<LongWritable>();
         try {
             do {
@@ -41,13 +60,23 @@ public class RelatedUsersWritable implements Writable {
         }
     }
 
+    /**
+     * write.
+     * @param out output stream
+     * @throws IOException -
+     */
     @Override
-    public void write(DataOutput out) throws IOException {
+    public void write(final DataOutput out) throws IOException {
         for (LongWritable item : this.relatedUsers) {
             out.writeLong(item.get());
         }
     }
     
+    /**
+     * Create String.
+     * 
+     * @return string reprsents for the related users. 
+     */
     @Override
     public String toString() {
         StringBuilder rtStr = new StringBuilder();
