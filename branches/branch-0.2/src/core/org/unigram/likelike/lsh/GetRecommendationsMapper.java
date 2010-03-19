@@ -50,8 +50,17 @@ public class GetRecommendationsMapper extends
         }
     }
 
-    private void writeCandidates(int targetIndex,
-            List<LongWritable> relatedUsers, Context context) 
+    /**
+     * write candidates.
+     * 
+     * @param targetIndex target id
+     * @param relatedUsers related users
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
+     */
+    private void writeCandidates(final int targetIndex,
+            final List<LongWritable> relatedUsers, final Context context) 
         throws IOException, InterruptedException {
         LongWritable targetId 
             = new LongWritable(relatedUsers.get(targetIndex).get());        
@@ -59,7 +68,6 @@ public class GetRecommendationsMapper extends
             candidateIndex < relatedUsers.size(); candidateIndex++) {
             if (targetIndex == candidateIndex) {
                 continue;
-
             }
             LongWritable candidateId 
                 = new LongWritable(relatedUsers.get(candidateIndex).get());
@@ -67,7 +75,4 @@ public class GetRecommendationsMapper extends
                     new LongWritable(relatedUsers.size())));
         }
     }
-    
-    
-        
 }

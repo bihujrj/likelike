@@ -22,8 +22,12 @@ public class ValidationReducer extends
 
 
     /** 
-     * value candidate
-     * key targets and candidateFeature
+     * Reduce method.
+     * @param candidate candidate id
+     * @param values targets and candidateFeature
+     * @param context -
+     * @throws IOException -
+     * @throws InterruptedException -
      */
     @Override
     public void reduce(final LongWritable candidate,

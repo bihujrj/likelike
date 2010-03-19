@@ -21,17 +21,34 @@ import org.unigram.likelike.util.InverseMapper;
 import org.unigram.likelike.util.AddFeatureMapper;
 import org.unigram.likelike.util.AddFeatureReducer;
 
+/**
+ *
+ */
 public class FeatureExtraction  extends Configured 
     implements Tool {
 
+    /**
+     * run.
+     * @param args arguments
+     * @return 0 when succeeded
+     * @throws Exception -
+     */
     @Override
-    public int run(String[] args) throws Exception {
+    public int run(final String[] args) throws Exception {
         Configuration conf = getConf();
         return this.run(args, conf);   
     }
 
-    
-    public int run(String[] args, Configuration conf) 
+    /**
+     * run.
+     * @param args arguments
+     * @param conf configuration
+     * @return 0 when succeeded
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    public int run(final String[] args, final Configuration conf) 
         throws IOException, InterruptedException, ClassNotFoundException {
         
         String recommendDir = "";
@@ -65,8 +82,21 @@ public class FeatureExtraction  extends Configured
         return 0;
     }        
 
-    private boolean relatedFeatureExtraction(String addedFeatureDir,
-            String outputDir, String featureDir, Configuration conf) 
+    /**
+     * Feature extraction for related ones.
+     * 
+     * @param addedFeatureDir input dir
+     * @param outputDir output dir
+     * @param featureDir feature dir 
+     * @param conf configuration
+     * @return 0 when succeeded
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean relatedFeatureExtraction(final String addedFeatureDir,
+            final String outputDir, final String featureDir, 
+            final Configuration conf) 
            throws  IOException, InterruptedException, ClassNotFoundException {
         Path addedfeaturePath = new Path(addedFeatureDir);
         Path outputPath = new Path(outputDir);
@@ -91,9 +121,18 @@ public class FeatureExtraction  extends Configured
         return job.waitForCompletion(true);            
     }
 
-
-    private boolean inverse(String inputDir, String outputDir,
-            Configuration conf) 
+    /**
+     * inverse.
+     * @param inputDir input dir
+     * @param outputDir output dir
+     * @param conf configuration
+     * @return 0 when succeeded 
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean inverse(final String inputDir, final String outputDir,
+            final Configuration conf) 
     throws IOException, InterruptedException, ClassNotFoundException {
         Path inputPath = new Path(inputDir);
         Path outputPath = new Path(outputDir);
@@ -116,9 +155,20 @@ public class FeatureExtraction  extends Configured
         return job.waitForCompletion(true);
     }    
 
-    private boolean addFeatures(String recommendDir, 
-            String outputFile, String featureDir,
-            Configuration conf) throws 
+    /**
+     * add features.
+     * @param recommendDir inpu dir
+     * @param outputFile output dir
+     * @param featureDir feature dir
+     * @param conf configure
+     * @return 0 when succeeded
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean addFeatures(final String recommendDir, 
+            final String outputFile, final String featureDir,
+            final Configuration conf) throws 
             IOException, InterruptedException, ClassNotFoundException {
         Path recommendPath = new Path(recommendDir);
         Path featurePath = new Path(featureDir);
@@ -158,6 +208,7 @@ public class FeatureExtraction  extends Configured
         System.exit(exitCode);
     }
     
+    /** file system.  */
     private FileSystem fs = null;
     
 }

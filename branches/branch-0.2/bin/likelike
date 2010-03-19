@@ -67,7 +67,7 @@ this="$bin/$script"
 
 # setting variables                                                                                                                                                                 
 export LIKELIKE_HOME=`dirname "$this"`/..
-export LIKELIKE_EXAMPLE=$LIKELIKE_HOME/likelike-0.1-examples.jar
+export LIKELIKE_EXAMPLE=$LIKELIKE_HOME/likelike-0.2-examples.jar
 export LIKELIKE_DRIVER_CLASS='org.unigram.likelike.LikelikeDriver'
 
 # exec                                                                                                                                                                              

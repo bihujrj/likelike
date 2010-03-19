@@ -1,7 +1,6 @@
 package org.unigram.likelike.validate;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -27,8 +26,8 @@ import org.unigram.likelike.util.InverseMapper;
 public class Validation extends Configured implements Tool {
     
     /**
-     * run. 
-     * @param args -
+     * Run.
+     * @param args arguments
      * @return 0
      * @throws Exception -
      */
@@ -39,7 +38,7 @@ public class Validation extends Configured implements Tool {
     }
 
     /**
-     * run.
+     * Run.
      * @param args arguments
      * @param conf configuration
      * @return -
@@ -83,12 +82,21 @@ public class Validation extends Configured implements Tool {
         
         return 0;
     }    
-
     
-    private boolean inverse(String inputDir, String outputDir,
-            Configuration conf) 
-
-    throws IOException, InterruptedException, ClassNotFoundException {
+    /**
+     * Inverse.
+     * @param inputDir input 
+     * @param outputDir output
+     * @param conf configuration
+     * @return true when succeeded.
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean inverse(final String inputDir,
+            final String outputDir, final Configuration conf) 
+    throws IOException, InterruptedException, 
+    ClassNotFoundException {
         Path inputPath = new Path(inputDir);
         Path outputPath = new Path(outputDir);
         FsUtil.checkPath(outputPath, this.fs);
@@ -110,9 +118,22 @@ public class Validation extends Configured implements Tool {
         return job.waitForCompletion(true);
     }
 
-
-    private boolean validate(String addedFeatureDir, String outputDir,
-            String featureDir, Configuration conf) 
+    
+    /**
+     * Validate.
+     * 
+     * @param addedFeatureDir input dir
+     * @param outputDir output dir
+     * @param featureDir feature dir
+     * @param conf configuration
+     * @return true when succeeded
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean validate(final String addedFeatureDir, 
+            final String outputDir, final String featureDir, 
+            final Configuration conf) 
     throws IOException, InterruptedException, ClassNotFoundException {
         Path addedfeaturePath = new Path(addedFeatureDir);
         Path outputPath = new Path(outputDir);
@@ -137,10 +158,22 @@ public class Validation extends Configured implements Tool {
         return job.waitForCompletion(true);                  
     }
 
-
-    private boolean addTargetFeatures(String recommendDir, 
-            String outputFile, String featureDir,
-            Configuration conf) throws 
+    /**
+     * add target feature.
+     * @param recommendDir input dir
+     * @param outputFile output dir
+     * @param featureDir feature dir
+     * @param conf configuration
+     * @return true when succeeded
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean addTargetFeatures(
+            final String recommendDir, 
+            final String outputFile, 
+            final String featureDir,
+            final Configuration conf) throws 
             IOException, InterruptedException, ClassNotFoundException {
         Path recommendPath = new Path(recommendDir);
         Path featurePath = new Path(featureDir);
@@ -168,7 +201,7 @@ public class Validation extends Configured implements Tool {
     /**
      * Main method.
      *
-     * @param args argument strings which contain input and output files.
+     * @param args argument strings which contain input and output files
      * @throws Exception -
      */
     public static void main(final String[] args)
@@ -178,5 +211,6 @@ public class Validation extends Configured implements Tool {
         System.exit(exitCode);
     }
     
+    /** File system. */
     private FileSystem fs = null;
 }

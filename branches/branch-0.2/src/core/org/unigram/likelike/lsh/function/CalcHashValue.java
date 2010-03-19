@@ -21,6 +21,9 @@ package org.unigram.likelike.lsh.function;
  */
 public class CalcHashValue {
     
+    /**
+     * Constructor.
+     */
     public CalcHashValue() {}
 
     /**
@@ -30,9 +33,10 @@ public class CalcHashValue {
      * NOTE: applied 64 bit hash function by Thomas Wang.
      * 
      * @param value input
+     * @param hashSeed seed value for hash function
      * @return hashed value
      */
-    public Long run(long value, long hashSeed) {  
+    public Long run(final long value, final long hashSeed) {  
         Long key = (value+hashSeed);
         key = (~key) + (key << 21);
         key = key ^ (key >>> 24);

@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Random;
-import java.util.Vector;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -38,7 +37,6 @@ import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-import org.unigram.likelike.lsh.function.MinWiseFunction;
 import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.FsUtil;
 import org.unigram.likelike.common.LikelikeConstants;
@@ -78,8 +76,14 @@ public class LSHRecommendations extends
         return this.run(args, conf);
     }
     
-
-    public int run(String[] args, Configuration conf) 
+    /**
+     * Run.
+     * @param args arguments
+     * @param conf configuration
+     * @return 0 when succeeded.
+     * @throws Exception -
+     */
+    public int run(final String[] args, final Configuration conf) 
     throws Exception {
 
         String inputFile = "";
@@ -121,10 +125,18 @@ public class LSHRecommendations extends
         return 0;
     }
   
-    private String setHashKeys(int iterate, 
-        String inputFile, Configuration conf) throws IOException {
+    /**
+     * Set hash keys into a string.
+     * @param iterate the number of hash keys 
+     * @param inputFile input 
+     * @param conf configuration
+     * @return string contains hash keys 
+     * @throws IOException -
+     */
+    private String setHashKeys(final int iterate, 
+            final String inputFile, final Configuration conf) 
+    throws IOException {
 
-        
         StringBuffer keysStrBuffer = new StringBuffer(); 
         for (int i =0; i < iterate; i++) {
             Long hashKey = this.rand.nextLong();
@@ -156,9 +168,15 @@ public class LSHRecommendations extends
                         LikelikeConstants.LIKELIKE_INPUT_RECORDS, -1));
     }
 
-
-    private void saveKeys(String keys, 
-            String inputFile, Configuration conf) 
+    /**
+     * Save keys.
+     * @param keys hash keys
+     * @param inputFile input file
+     * @param conf configuration
+     * @throws IOException -
+     */
+    private void saveKeys(final String keys, 
+            final String inputFile, final Configuration conf) 
     throws IOException {
         /* save to local fs */
         String tempKeyFile = new String("keys.tmp");
@@ -225,10 +243,19 @@ public class LSHRecommendations extends
         return job.waitForCompletion(true);        
     }
 
-
-    private boolean extractClusters(String inputFile, 
-            String clusterFile,
-            Configuration conf) throws IOException, 
+    /**
+     * Extract clusters.
+     * @param inputFile input 
+     * @param clusterFile cluster files
+     * @param conf configuration
+     * @return 0 when succeeded
+     * @throws IOException -
+     * @throws InterruptedException -
+     * @throws ClassNotFoundException -
+     */
+    private boolean extractClusters(final String inputFile, 
+            final String clusterFile,
+            final Configuration conf) throws IOException, 
             InterruptedException, ClassNotFoundException {
 
         Path inputPath = new Path(inputFile);
@@ -256,11 +283,10 @@ public class LSHRecommendations extends
         return result;
     }
 
-
     /**
      * Main method.
      *
-     * @param args argument strings which contain input and output files.
+     * @param args argument strings which contain input and output files
      * @throws Exception -
      */
     public static void main(final String[] args)
