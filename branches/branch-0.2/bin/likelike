@@ -69,6 +69,7 @@ this="$bin/$script"
 export LIKELIKE_HOME=`dirname "$this"`/..
 export LIKELIKE_EXAMPLE=$LIKELIKE_HOME/likelike-0.2-examples.jar
 export LIKELIKE_DRIVER_CLASS='org.unigram.likelike.LikelikeDriver'
+export HADOOP_CLASSPATH=$LIKELIKE_HOME/likelike-0.2.jar:$LIKELIKE_HOME
 
 # exec                                                                                                                                                                              
 exec $HADOOP_HOME/bin/hadoop jar $LIKELIKE_EXAMPLE $LIKELIKE_DRIVER_CLASS $TASK $@
