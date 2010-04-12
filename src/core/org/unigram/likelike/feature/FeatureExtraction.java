@@ -1,5 +1,5 @@
-package org.unigram.likelike.feature;
 
+package org.unigram.likelike.feature;
 import java.io.IOException;
 
 import org.apache.hadoop.conf.Configuration;

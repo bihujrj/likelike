@@ -59,8 +59,6 @@ public class TestCalcHashValue extends TestCase {
         Set<Long>resultMapA = this.extractTopRanked(233L, 10000, 10); 
         Set<Long>resultMapB =  this.extractTopRanked(3L, 10000, 10);
         
-        System.out.println("resultMapA"+resultMapA.toString());
-        System.out.println("resultMapB"+resultMapB.toString());
         int collistionCount = 0;
         for (Long id : resultMapA) {
             if (resultMapB.contains(id)) {
@@ -86,7 +84,6 @@ public class TestCalcHashValue extends TestCase {
         for (int i=0; i<threshold; i++) {
             Long hashedValue = hashedValues.lastKey();
             Long id = hashedValues.get(hashedValue);
-            System.out.println("added: "+id);
             rtSet.add(id);
             hashedValues.remove(hashedValue);
         }
