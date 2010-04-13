@@ -1,3 +1,19 @@
+/**
+ * Copyright 2009 Takahiko Ito
+ * 
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ * 
+ *    http://www.apache.org/licenses/LICENSE-2.0 
+ *        
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
 package org.unigram.likelike.util;
 
 import java.io.IOException;
@@ -36,13 +52,18 @@ public class AddFeatureReducer extends
                 rtValue = new Text(key+"\t"+v);
                 continue;
             }
-            candidates.add(Long.parseLong(v.toString()));
+            candidates.add(Long.parseLong(v.toString())); // example
         }
 
         /* output recommendations with target features */
+
+        if (rtValue==null) {
+            return;
+        }
+        
         for (Long v : candidates) {
             /* write with inverse key and value */ 
-            context.write(new LongWritable(v), rtValue); 
+            context.write(new LongWritable(v), rtValue);  // caution: inverse key (target) and value (candidate)
         }
     }
 }
