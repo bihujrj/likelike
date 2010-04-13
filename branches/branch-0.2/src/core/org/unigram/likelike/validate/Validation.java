@@ -67,7 +67,10 @@ public class Validation extends Configured implements Tool {
             } else if ("-threshold".equals(args[i])) {
                 conf.setFloat(ValidationConstants.VALIDATION_THRESHOLD, 
                         Float.parseFloat(args[++i]));                
-            } 
+            } else if ("-help".equals(args[i])) {
+                this.showParameters();
+                return 0;                
+            }
         }
 
         this.addTargetFeatures(recommendDir, 
@@ -197,7 +200,21 @@ public class Validation extends Configured implements Tool {
 
         return job.waitForCompletion(true);          
     }
-
+    
+    
+    /**
+     * Show parameters for FreqentNGramExtraction.
+     */
+    private void showParameters() {
+        System.out.println("Paramters:");
+        System.out.println("    -input INPUT                " 
+                + "use INPUT as input resource");
+        System.out.println("    -output OUTPUT              " 
+                + "use OUTPUT as outupt prefix");
+        System.out.println("    [-help]                     "
+                + "show usage");
+    }    
+        
     /**
      * Main method.
      *

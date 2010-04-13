@@ -38,8 +38,10 @@ public final class LikelikeDriver {
             pgd.addClass("validate", Validation.class,
                     "validate the result recommended pairs " +
                     "with cosine similarity.");        
-            pgd.addClass("featureExtraction", FeatureExtraction.class,
-                     "");                    
+            pgd.addClass("featureExtraction", 
+                    FeatureExtraction.class, "extract features");                    
+            pgd.addClass("help", ShowHelp.class,  "Show usage.");
+            pgd.addClass("version", ShowVersion.class,  "Show version.");            
             pgd.driver(argv);
             exitCode = 0;
         } catch (Throwable e) {

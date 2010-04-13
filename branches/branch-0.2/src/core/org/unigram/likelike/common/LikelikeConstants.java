@@ -20,7 +20,6 @@ package org.unigram.likelike.common;
  * Contains constans used in Likelike.
  *
  */
-
 public final class LikelikeConstants {
 
     /** symbol: number of reducers. */
@@ -76,7 +75,9 @@ public final class LikelikeConstants {
 
     /** symbol: number of input records. */
     public static final String LIKELIKE_INPUT_RECORDS
-        = "likelike.input.record";    
+        = "likelike.input.record";
+
+    public static final float VERSION = 0.2F;    
     
     /** for safe. */
     private LikelikeConstants() {}

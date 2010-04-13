@@ -113,6 +113,9 @@ public class LSHRecommendations extends
             } else if ("-maxRecommend".equals(args[i])) {
                 conf.setLong(LikelikeConstants.MAX_OUTPUT_SIZE, 
                         Long.parseLong(args[++i]));
+            } else if ("-help".equals(args[i])) {
+                this.showParameters();
+                return 0;
             } 
         }
         
@@ -303,5 +306,18 @@ public class LSHRecommendations extends
         Configuration.addDefaultResource("conf/likelike-default.xml");
         Configuration.addDefaultResource("conf/likelike-site.xml");
     }
+
+    /**
+     * Show parameters for FreqentNGramExtraction.
+     */
+    private void showParameters() {
+        System.out.println("Paramters:");
+        System.out.println("    -input INPUT                " 
+                + "use INPUT as input resource");
+        System.out.println("    -output OUTPUT              " 
+                + "use OUTPUT as outupt prefix");
+        System.out.println("    [-help]                     "
+                + "show usage");
+    }    
     
 }
