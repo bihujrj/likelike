@@ -1,1 +1,25 @@
 #labels Featured
+=Requirements=
+
+ * Java 1.6.0 or greater
+ * Hadoop 0.20.0 or greater
+
+=Download and install=
+ * Install Java (install from [http://www.java.com/download/ download page]) 
+ * Install Hadoop  (see [http://hadoop.apache.org/common/docs/current/quickstart.html Hadoop Quick Start])
+ * Install Likelike
+   # go to your home directory (/home/username if your account name is 'username')
+     {{{
+     cd /home/username/
+     }}}
+   # download the source file by svn
+     {{{
+     svn checkout http://likelike.googlecode.com/svn/trunk/ likelike
+     }}}
+   # set path 
+   adding the oluolu jar file into HADOOP_CLASSPATH in $HADOOP_HOME/conf/hadoop-env.sh)
+     {{{
+     export HADOOP_CLASSPATH=$CLASSPATH:/home/username/likelike/likelike-***.jar
+     }}}
+
+=Run a example= 
