@@ -16,6 +16,11 @@
      {{{
      svn checkout http://likelike.googlecode.com/svn/trunk/ likelike
      }}}
+   # run ant
+     {{{
+     cd likelike
+     ant
+     }}}     
    # set path 
    adding the oluolu jar file into HADOOP_CLASSPATH in $HADOOP_HOME/conf/hadoop-env.sh)
      {{{
