@@ -19,7 +19,10 @@ package org.unigram.likelike.lsh;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
@@ -29,6 +32,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
 import org.unigram.likelike.common.LikelikeConstants;
+import org.unigram.likelike.common.RelatedUsersWritable;
 import org.unigram.likelike.common.SeedClusterId;
 import org.unigram.likelike.lsh.function.IHashFunction;
 
@@ -36,7 +40,7 @@ import org.unigram.likelike.lsh.function.IHashFunction;
  * SelectClustersMapper.
  */
 public class SelectClustersMapper extends
-        Mapper<LongWritable, Text, SeedClusterId, LongWritable> {
+        Mapper<LongWritable, Text, SeedClusterId, RelatedUsersWritable> {
     /**
      * map.
      * @param key dummy
@@ -53,17 +57,22 @@ public class SelectClustersMapper extends
 
         try {
             String[] tokens = inputStr.split("\t");
-            Long id = Long.parseLong(tokens[0]);
+            Long id = Long.parseLong(tokens[0]); // example id
             Map<Long, Long> featureMap 
                 = this.extractFeatures(tokens[1]);
             
             for (int i=0; i<seedsAry.length; i++) {
-                LongWritable clusterId 
-                    = this.function.returnClusterId(featureMap, 
-                        seedsAry[i]);
-                context.write(new SeedClusterId(
-                        seedsAry[i], clusterId.get()), 
-                        new LongWritable(id));
+                LongWritable clusterId = 
+                    this.function.returnClusterId(featureMap, seedsAry[i]);
+                
+                List<LongWritable> eid = 
+                    new ArrayList<LongWritable>();
+                eid.add(new LongWritable(id));
+                
+                SeedClusterId seedClusterId = new SeedClusterId(
+                        seedsAry[i], clusterId.get());
+                context.write(seedClusterId, 
+                        new RelatedUsersWritable(eid));
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("PARSING ERROR in line: " + inputStr);

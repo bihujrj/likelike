@@ -123,7 +123,6 @@ public class TestLSHRecommendations extends TestCase {
             String[] lineArray = line.split("\t");
             resultMap.put(Long.parseLong(lineArray[0]), // target 
                     Long.parseLong(lineArray[1]));      // recommended
-            
         }
         
         /* basic test cases */

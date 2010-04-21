@@ -63,16 +63,17 @@ public class RelatedUsersWritable implements Writable {
      */
     @Override
     public void readFields(final DataInput in) throws IOException {
-        this.relatedUsers= new ArrayList<LongWritable>();
         try {
-            do {
+            int listSize = in.readInt();
+            this.relatedUsers= new ArrayList<LongWritable>(listSize);
+            for(int i=0; i<listSize;i++) {
                 long userID = in.readLong();
                 this.relatedUsers.add(new LongWritable(userID));
-            } while (true);
+            } 
         } catch (EOFException e) {
-            // do nothing
+            e.printStackTrace();
         } catch (ArrayIndexOutOfBoundsException e) {
-            // do nothing
+            e.printStackTrace();
         }
     }
 
@@ -83,6 +84,7 @@ public class RelatedUsersWritable implements Writable {
      */
     @Override
     public void write(final DataOutput out) throws IOException {
+        out.writeInt(this.relatedUsers.size());
         for (LongWritable item : this.relatedUsers) {
             out.writeLong(item.get());
         }
@@ -102,5 +104,14 @@ public class RelatedUsersWritable implements Writable {
         }
         return rtStr.toString();
     }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (o instanceof RelatedUsersWritable) {
+            RelatedUsersWritable that = (RelatedUsersWritable) o;
+            return (this.relatedUsers.equals(that.relatedUsers));
+        }
+        return false;
+    }    
 
 }
