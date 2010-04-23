@@ -127,7 +127,8 @@ public class TestLSHRecommendations extends TestCase {
         
         /* basic test cases */
         Set keys = resultMap.keySet();
-        Collection coll = (Collection) resultMap.get(new Long(0));
+        Collection coll = null;
+        coll = (Collection) resultMap.get(new Long(0));
         assertTrue(coll.size() >= 2 && coll.size() <= 4);
         coll = (Collection) resultMap.get(new Long(1));
         assertTrue(coll.size() >= 2 && coll.size() <= 4);
@@ -139,8 +140,6 @@ public class TestLSHRecommendations extends TestCase {
         /* examples with no recommendation */
         assertFalse(resultMap.containsKey(new Long(7)));
         assertFalse(resultMap.containsKey(new Long(8)));
-        
-        
         
         return true;
     }

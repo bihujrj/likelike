@@ -38,9 +38,9 @@ import org.unigram.likelike.common.RelatedUsersWritable;
 /**
  * Reducer implementation. Extract pairs related to each other.
  */
-public class GetRecommendationsReducer extends
+public class GetRecommendationsCombiner extends
         Reducer<LongWritable, MapWritable, 
-        LongWritable, LongWritable> {
+        LongWritable, MapWritable> {
 
     /**
      * reduce. 
@@ -55,26 +55,23 @@ public class GetRecommendationsReducer extends
             final Context context)
             throws IOException, InterruptedException {
         
-        HashMap<Long, Double> candidates 
-            = new HashMap<Long, Double>();
+        Map<LongWritable, FloatWritable> candidates 
+            = new HashMap<LongWritable, FloatWritable>();
         
-        //System.out.println("\n\ntargetId: " + targetId);
         for (MapWritable candMap : values) {
             Set<Writable> cands = candMap.keySet();
-            //System.out.println("\tcands.size(): " + cands.size());
             for (Writable cand : cands) {
                 LongWritable candId = (LongWritable) cand;
                 if (candId.equals(targetId)) { continue; }
                 
-                Long tid = candId.get();
-                if (candidates.containsKey(tid)) {
-                    Double weight = candidates.get(tid);
+                if (candidates.containsKey(candId)) {
+                    FloatWritable weight = candidates.get(candId);
                     FloatWritable tw = (FloatWritable) candMap.get(candId);
-                    weight += tw.get();
-                    candidates.put(tid, weight);
+                    weight.set(tw.get() + weight.get());
+                    candidates.put(candId, weight);
                 } else {
-                    candidates.put(tid, 
-                            new Double(1.0));
+                    candidates.put(candId, 
+                            new FloatWritable(1.0F));
                 }
             
                 if (candidates.size() > 50000) { // TODO should be parameterized
@@ -83,34 +80,10 @@ public class GetRecommendationsReducer extends
             }
         }
         
-        /* sort by value and then output */
-        ArrayList<Map.Entry> array 
-            = new ArrayList<Map.Entry>(candidates.entrySet());
-        Collections.sort(array, new Comparator<Object>(){
-            public int compare(final Object o1, final Object o2){
-                Map.Entry e1 =(Map.Entry)o1;
-                Map.Entry e2 =(Map.Entry)o2;
-                Double e1Value = (Double) e1.getValue();
-                Double e2Value = (Double) e2.getValue();
-                return (e2Value.compareTo(e1Value));
-            }
-        });
-
-        Iterator it = array.iterator();
-        int i = 0;
-        while(it.hasNext()) {
-            if (i >= this.maxOutputSize) {
-                return;
-            }
-            Map.Entry obj = (Map.Entry) it.next();
-            //System.out.println("\twritten value:" + (Long)obj.getKey());
-            context.write(targetId, new LongWritable((Long)obj.getKey()));
-            i += 1;
-        }
+        MapWritable rtMap = new MapWritable();
+        rtMap.putAll(candidates);
+        context.write(targetId, rtMap);
     }
-    
-    /** maximum number of output per example. */
-    private long maxOutputSize;
     
     /**
      * setup.
@@ -125,8 +98,5 @@ public class GetRecommendationsReducer extends
         } else {
             jc = context.getConfiguration();
         }
-        this.maxOutputSize = jc.getLong(
-                LikelikeConstants.MAX_OUTPUT_SIZE , 
-                LikelikeConstants.DEFAULT_MAX_OUTPUT_SIZE);
     }    
 }
