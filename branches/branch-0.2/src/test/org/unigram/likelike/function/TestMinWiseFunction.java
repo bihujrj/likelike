@@ -18,7 +18,9 @@ package org.unigram.likelike.lsh.function;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.text.html.MinimalHTMLWriter;
 
@@ -39,10 +41,10 @@ public class TestMinWiseFunction extends TestCase {
         super(name);
     }
     
-    private Map<Long, Long> initMap(Long[] keys, Long[] values) {
-        Map<Long, Long> rtMap = new HashMap<Long, Long>();
+    private Set<Long> initMap(Long[] keys) {
+        Set<Long> rtMap = new HashSet<Long>();
         for(int i=0;i<keys.length;i++) {
-            rtMap.put(keys[i], values[i]);
+            rtMap.add(keys[i]);
         }
         return rtMap;
     }
@@ -59,26 +61,23 @@ public class TestMinWiseFunction extends TestCase {
         long seed = 1438L;
         
         Long[] keys1   = {10L, 438L, 43L, 438L, 3489L};
-        Long[] values1 = {1L,  1L,   1L,  1L,   1L};
-        Map<Long, Long> map1 = this.initMap(keys1, values1);
-        LongWritable hashValue1 = function.returnClusterId(map1, seed);
+        Set<Long> set1 = this.initMap(keys1);
+        LongWritable hashValue1 = function.returnClusterId(set1, seed);
         
         Long[] keys2   = {10L, 438L, 43L, 438L, 3489L};
-        Long[] values2 = {1L,  1L,   1L,  1L,   1L};
-        Map<Long, Long> map2 = this.initMap(keys2, values2);        
-        LongWritable hashValue2 = function.returnClusterId(map2, seed);
+        Set<Long> set2 = this.initMap(keys2);        
+        LongWritable hashValue2 = function.returnClusterId(set2, seed);
         
         Long[] keys3   = {11L, 439L};
-        Long[] values3 = {1L,  1L };
-        Map<Long, Long> map3 = this.initMap(keys1, values1);        
-        LongWritable hashValue3 = function.returnClusterId(map2, seed);        
+        Set<Long> set3 = this.initMap(keys1);  
+        LongWritable hashValue3 = function.returnClusterId(set3, seed);        
         
         assertEquals(hashValue1, hashValue2);
         assertFalse((hashValue1 == hashValue3));
         
         function = this.createFunction(1);
         long seed2 = 1438L; 
-        LongWritable hashValue1_dash = function.returnClusterId(map1, seed2);
+        LongWritable hashValue1_dash = function.returnClusterId(set1, seed2);
 
         assertFalse(hashValue1_dash == hashValue1);
         
@@ -90,27 +89,24 @@ public class TestMinWiseFunction extends TestCase {
         long seed = 1438L;
         
         Long[] keys1   = {10L, 438L, 43L, 438L, 3489L};
-        Long[] values1 = {1L,  1L,   1L,  1L,   1L};
-        Map<Long, Long> map1 = this.initMap(keys1, values1);
-        LongWritable hashValue1 = function.returnClusterId(map1, seed);
+        Set<Long> set1 = this.initMap(keys1);
+        LongWritable hashValue1 = function.returnClusterId(set1, seed);
         
         Long[] keys2   = {10L, 438L, 43L, 438L, 3489L};
-        Long[] values2 = {1L,  1L,   1L,  1L,   1L};
-        Map<Long, Long> map2 = this.initMap(keys2, values2);        
-        LongWritable hashValue2 = function.returnClusterId(map2, seed);
+        Set<Long> set2 = this.initMap(keys2);        
+        LongWritable hashValue2 = function.returnClusterId(set2, seed);
         
         Long[] keys3   = {11L, 439L};
-        Long[] values3 = {1L,  1L };
-        Map<Long, Long> map3 = this.initMap(keys1, values1);        
-        LongWritable hashValue3 = function.returnClusterId(map2, seed);        
+        Set<Long> set3 = this.initMap(keys1);        
+        LongWritable hashValue3 = function.returnClusterId(set3, seed);        
         
-        assertEquals(hashValue1,  hashValue2);
+        assertEquals(hashValue1, hashValue2);
         assertFalse((hashValue1 == hashValue3));
 
         function = this.createFunction(depth);
         long seed2 = 243L;
-        LongWritable hashValue1_dash = function.returnClusterId(map1, seed);
-        LongWritable hashValue2_dash = function.returnClusterId(map2, seed);
+        LongWritable hashValue1_dash = function.returnClusterId(set1, seed);
+        LongWritable hashValue2_dash = function.returnClusterId(set2, seed);
         
         assertFalse(hashValue1 
                 == hashValue1_dash);

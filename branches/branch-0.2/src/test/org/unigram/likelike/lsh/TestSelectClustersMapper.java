@@ -51,13 +51,13 @@ public class TestSelectClustersMapper extends TestCase {
         CalcHashValue calcHash = new CalcHashValue();         
 
         SelectClustersMapper mapper = new SelectClustersMapper();        
-        Mapper<LongWritable, Text, SeedClusterId, RelatedUsersWritable>.Context mock_context
+        Mapper<LongWritable, Text, SeedClusterId, LongWritable>.Context mock_context
             = mock(Mapper.Context.class);
         mapper.setup(mock_context);
         
         /**/ 
         try {
-            Text value = new Text("327\t1:3 2:3 43:3 21:1");
+            Text value = new Text("327\t1 2 43 21");
             mapper.map(null, value, mock_context);
         } catch (IOException e) {
             e.printStackTrace();
@@ -79,15 +79,11 @@ public class TestSelectClustersMapper extends TestCase {
                          new Long(1));
          }         
          
-         List<LongWritable> eid = 
-             new ArrayList<LongWritable>();
-         eid.add(new LongWritable(327));
-         RelatedUsersWritable reid = new RelatedUsersWritable(eid);
          try {
              
              verify(mock_context, times(1)).write(
                      new SeedClusterId(this.HASH_SEED, hashedFeatureVector.firstKey()),                     
-                     reid);
+                     new LongWritable(327));
          } catch (Exception e) {
              e.printStackTrace();
              TestCase.fail();

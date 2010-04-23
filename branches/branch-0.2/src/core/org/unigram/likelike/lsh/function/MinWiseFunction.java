@@ -18,6 +18,7 @@ package org.unigram.likelike.lsh.function;
 
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
@@ -39,15 +40,15 @@ public class MinWiseFunction
      */
     @Override
     public LongWritable returnClusterId(
-        final Map<Long, Long> featureVector, final long seed) {
+        final Set<Long> featureVector, final long seed) {
         long clusterId = 0;
         
         TreeMap<Long, Long> hashedFeatureVector 
-            = new TreeMap<Long, Long>(); // key: hashed, value: id
+            = new TreeMap<Long, Long>(); // key: hashed feature-id, value: dummy
         
-        for (Long key : featureVector.keySet()) {
+        for (Long key : featureVector) {
             hashedFeatureVector.put(this.calcHash.run(key, seed), 
-                        new Long(featureVector.get(key)));
+                        new Long(1));  
         }
         
         for (int i = 0; i < this.depth; i++) {
