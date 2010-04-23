@@ -19,11 +19,8 @@ package org.unigram.likelike.lsh;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
@@ -40,7 +37,7 @@ import org.unigram.likelike.lsh.function.IHashFunction;
  * SelectClustersMapper.
  */
 public class SelectClustersMapper extends
-        Mapper<LongWritable, Text, SeedClusterId, RelatedUsersWritable> {
+        Mapper<LongWritable, Text, SeedClusterId, LongWritable> {
     /**
      * map.
      * @param key dummy
@@ -58,21 +55,16 @@ public class SelectClustersMapper extends
         try {
             String[] tokens = inputStr.split("\t");
             Long id = Long.parseLong(tokens[0]); // example id
-            Map<Long, Long> featureMap 
+            Set<Long> featureSet 
                 = this.extractFeatures(tokens[1]);
             
             for (int i=0; i<seedsAry.length; i++) {
-                LongWritable clusterId = 
-                    this.function.returnClusterId(featureMap, seedsAry[i]);
-                
-                List<LongWritable> eid = 
-                    new ArrayList<LongWritable>();
-                eid.add(new LongWritable(id));
-                
-                SeedClusterId seedClusterId = new SeedClusterId(
-                        seedsAry[i], clusterId.get());
-                context.write(seedClusterId, 
-                        new RelatedUsersWritable(eid));
+                LongWritable clusterId 
+                    = this.function.returnClusterId(featureSet, 
+                        seedsAry[i]);
+                context.write(new SeedClusterId(
+                        seedsAry[i], clusterId.get()), 
+                        new LongWritable(id));
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("PARSING ERROR in line: " + inputStr);
@@ -86,18 +78,15 @@ public class SelectClustersMapper extends
      * @param featureStr string containing feature information
      * @return map containing feature and the value
      */
-    private Map<Long, Long> extractFeatures(
+    private Set<Long> extractFeatures(
             final String featureStr) {
-        Map<Long, Long> rtMap = new HashMap<Long, Long>();
+        Set<Long> rtSet = new HashSet<Long>();
         String[] featureArray = featureStr.split(" ");
         for (int i=0; i<featureArray.length; i++) {
-            String[] segArray = featureArray[i].split(":");
-            rtMap.put(Long.parseLong(segArray[0]), 
-                    Long.parseLong(segArray[1]));
+            rtSet.add(Long.parseLong(featureArray[i]));
         }
-        return rtMap;
+        return rtSet;
     }
-    
     
     /**
      * setup.
