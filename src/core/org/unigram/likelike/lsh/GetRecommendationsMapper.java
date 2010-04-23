@@ -17,9 +17,12 @@
 package org.unigram.likelike.lsh;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
+import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.RelatedUsersWritable;
@@ -29,7 +32,7 @@ import org.unigram.likelike.common.SeedClusterId;
  * Mapper. 
  */
 public class GetRecommendationsMapper extends
-        Mapper<SeedClusterId, RelatedUsersWritable, LongWritable, Candidate> {
+        Mapper<SeedClusterId, RelatedUsersWritable, LongWritable, MapWritable> {
     
     /**
      * Map method.
@@ -44,35 +47,30 @@ public class GetRecommendationsMapper extends
     public final void map(final SeedClusterId key,
             final RelatedUsersWritable value, final Context context) 
     throws IOException, InterruptedException  {
-        List<LongWritable> relatedUsers = value.getRelatedUsers();
-        for (int targetId = 0; targetId < relatedUsers.size(); targetId++) {
-            this.writeCandidates(targetId, relatedUsers, context);
+        List<LongWritable> users = value.getRelatedUsers();
+        MapWritable relatedUsers = this.createUserMap(value.getRelatedUsers());
+        
+        //System.out.println("users:" + users);
+        
+        for (int i = 0; i < users.size(); i++) {
+            LongWritable targetId 
+                = new LongWritable(users.get(i).get());
+            //System.out.println("\n\ntargetId: " + targetId);
+            context.write(targetId, new MapWritable(relatedUsers));          
         }
     }
 
-    /**
-     * write candidates.
-     * 
-     * @param targetIndex target id
-     * @param relatedUsers related users
-     * @param context -
-     * @throws IOException -
-     * @throws InterruptedException -
-     */
-    private void writeCandidates(final int targetIndex,
-            final List<LongWritable> relatedUsers, final Context context) 
-        throws IOException, InterruptedException {
-        LongWritable targetId 
-            = new LongWritable(relatedUsers.get(targetIndex).get());        
-        for (int candidateIndex = 0; 
-            candidateIndex < relatedUsers.size(); candidateIndex++) {
-            if (targetIndex == candidateIndex) {
-                continue;
-            }
-            LongWritable candidateId 
-                = new LongWritable(relatedUsers.get(candidateIndex).get());
-            context.write(targetId, new Candidate(candidateId, 
-                    new LongWritable(relatedUsers.size())));
+    MapWritable createUserMap(List<LongWritable> relatedUsers) {
+        HashMap<LongWritable, FloatWritable> tmpMap
+                = new HashMap<LongWritable, FloatWritable>();
+        for (LongWritable user : relatedUsers) {
+            tmpMap.put(user, new FloatWritable(1.0F));
         }
+        MapWritable rtMap = new MapWritable();
+        rtMap.putAll(tmpMap);
+        return rtMap;
     }
+    
+
+    
 }
