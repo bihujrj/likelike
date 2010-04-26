@@ -46,7 +46,19 @@ public class RelatedUsersWritable implements Writable {
     public RelatedUsersWritable(final List<LongWritable> users) {
         this.relatedUsers = users;
     }
-
+    
+    
+    /**
+     * Constructor. 
+     * @param users related users
+     */
+    public RelatedUsersWritable(final Long id) {
+        List<LongWritable> eid = 
+            new ArrayList<LongWritable>();
+        eid.add(new LongWritable(id));
+        this.relatedUsers = eid;
+    }
+    
     /**
      * Get related users.
      * @return set of related users

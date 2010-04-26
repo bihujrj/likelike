@@ -27,10 +27,6 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.MapWritable;
-import org.apache.hadoop.io.SequenceFile.CompressionType;
-import org.apache.hadoop.io.compress.CompressionCodec;
-import org.apache.hadoop.io.compress.GzipCodec;
 
 import org.apache.hadoop.mapreduce.Counters;
 import org.apache.hadoop.mapreduce.Job;
@@ -238,13 +234,11 @@ public class LSHRecommendations extends
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
         job.setMapperClass(GetRecommendationsMapper.class);
-        job.setCombinerClass(GetRecommendationsCombiner.class);        
         job.setReducerClass(GetRecommendationsReducer.class);
         job.setMapOutputKeyClass(LongWritable.class);
-        job.setMapOutputValueClass(MapWritable.class);
+        job.setMapOutputValueClass(Candidate.class);
         job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(LongWritable.class);
-        
         job.setInputFormatClass(SequenceFileInputFormat.class);
         job.setNumReduceTasks(conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
@@ -276,26 +270,13 @@ public class LSHRecommendations extends
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
         job.setMapperClass(SelectClustersMapper.class);
-        job.setCombinerClass(SelectClustersReducer.class);        
         job.setReducerClass(SelectClustersReducer.class);
         job.setMapOutputKeyClass(SeedClusterId.class);
-        job.setMapOutputValueClass(RelatedUsersWritable.class);
+        job.setMapOutputValueClass(LongWritable.class);
         job.setOutputKeyClass(SeedClusterId.class);
         job.setOutputValueClass(RelatedUsersWritable.class);
-        
-        // TODO activate compression
-        
-        //conf.setBoolean("mapred.output.compress", true);
-        //conf.setClass("mapred.output.compression.codec", 
-        //    GzipCodec.class, CompressionCodec.class);
-        
-        //SequenceFileOutputFormat.setOutputCompressorClass(job,
-        //        GzipCodec.class);
-        //      SequenceFileOutputFormat.setOutputCompressionType(job,
-        //       CompressionType.BLOCK);        
-        
         job.setOutputFormatClass(
-                SequenceFileOutputFormat.class);        
+                SequenceFileOutputFormat.class);
         job.setNumReduceTasks(
                 conf.getInt(LikelikeConstants.NUMBER_OF_REDUCES,
                 LikelikeConstants.DEFAULT_NUMBER_OF_REDUCES));
