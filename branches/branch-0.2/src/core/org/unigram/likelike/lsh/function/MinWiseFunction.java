@@ -59,7 +59,7 @@ public class MinWiseFunction
             clusterId += (minimum + (i * 13));
             hashedFeatureVector.remove(minimum);
         }
-        return new LongWritable(clusterId);        
+        return new LongWritable(clusterId);
     }
     
     /**

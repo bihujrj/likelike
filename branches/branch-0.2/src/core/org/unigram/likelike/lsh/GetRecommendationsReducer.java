@@ -23,63 +23,49 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.io.FloatWritable;
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.MapWritable;
-import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.Reducer.Context;
+import org.unigram.likelike.common.Candidate;
 import org.unigram.likelike.common.LikelikeConstants;
-import org.unigram.likelike.common.RelatedUsersWritable;
 
 /**
  * Reducer implementation. Extract pairs related to each other.
  */
 public class GetRecommendationsReducer extends
-        Reducer<LongWritable, MapWritable, 
+        Reducer<LongWritable, Candidate, 
         LongWritable, LongWritable> {
 
     /**
      * reduce. 
-     * @param targetId target
+     * @param key target
      * @param values candidates
      * @param context -
      * @throws IOException - 
      * @throws InterruptedException -
      */
-    public void reduce(final LongWritable targetId,
-            final Iterable<MapWritable> values,
+    public void reduce(final LongWritable key,
+            final Iterable<Candidate> values,
             final Context context)
             throws IOException, InterruptedException {
         
         HashMap<Long, Double> candidates 
             = new HashMap<Long, Double>();
-        
-        //System.out.println("\n\ntargetId: " + targetId);
-        for (MapWritable candMap : values) {
-            Set<Writable> cands = candMap.keySet();
-            //System.out.println("\tcands.size(): " + cands.size());
-            for (Writable cand : cands) {
-                LongWritable candId = (LongWritable) cand;
-                if (candId.equals(targetId)) { continue; }
-                
-                Long tid = candId.get();
-                if (candidates.containsKey(tid)) {
-                    Double weight = candidates.get(tid);
-                    FloatWritable tw = (FloatWritable) candMap.get(candId);
-                    weight += tw.get();
-                    candidates.put(tid, weight);
-                } else {
-                    candidates.put(tid, 
-                            new Double(1.0));
-                }
+        for (Candidate cand : values) {
+            Long tid = cand.getId().get();
+            if (candidates.containsKey(tid)) {
+               Double weight = candidates.get(tid);
+               weight += 1.0;
+               candidates.put(tid, weight);
+            } else {
+                candidates.put(tid, 
+                        new Double(1.0));
+            }
             
-                if (candidates.size() > 50000) { // TODO should be parameterized
-                    break;
-                }
+            if (candidates.size() > 50000) { // TODO should be parameterized
+                break;
             }
         }
         
@@ -103,8 +89,7 @@ public class GetRecommendationsReducer extends
                 return;
             }
             Map.Entry obj = (Map.Entry) it.next();
-            //System.out.println("\twritten value:" + (Long)obj.getKey());
-            context.write(targetId, new LongWritable((Long)obj.getKey()));
+            context.write(key, new LongWritable((Long)obj.getKey()));
             i += 1;
         }
     }

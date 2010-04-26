@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.MapWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.unigram.likelike.common.Candidate;
@@ -49,7 +48,7 @@ public class TestGetRecommendationsMapper extends TestCase {
             new GetRecommendationsMapper();
 
         Mapper<SeedClusterId, RelatedUsersWritable, LongWritable, 
-        MapWritable>.Context mock_context
+        Candidate>.Context mock_context
             = mock(Mapper.Context.class);        
         
         List<LongWritable> value = new ArrayList<LongWritable>();
@@ -82,31 +81,29 @@ public class TestGetRecommendationsMapper extends TestCase {
              TestCase.fail();
          }
         
-         
-         MapWritable expectedValue = mapper.createUserMap(value);
-         //try {
+         try {
              /* case: simple */
-             //verify(mock_context, times(1)).write(new LongWritable(1L),
-             //expectedValue);
+             verify(mock_context, times(1)).write(new LongWritable(54L),
+             new Candidate(new LongWritable(443L), clusterSize));
 
-             //verify(mock_context, times(1)).write(new LongWritable(5L),
-             //        expectedValue);
+             verify(mock_context, times(1)).write(new LongWritable(5L),
+                     new Candidate(new LongWritable(54L), clusterSize));
              
              /* case: symmetric */
-             //verify(mock_context, times(1)).write(new LongWritable(443L),
-             //        expectedValue);
+             verify(mock_context, times(1)).write(new LongWritable(443L),
+                     new Candidate(new LongWritable(54L), clusterSize));
              
              /* case: self recommendaton */
-             //verify(mock_context, times(0)).write(new LongWritable(443L),
-             //        expectedValue);
+             verify(mock_context, times(0)).write(new LongWritable(443L),
+                     new Candidate(new LongWritable(443L), clusterSize));
              
              /* case: id not in the cluster */
-             //verify(mock_context, times(0)).write(new LongWritable(98L),
-             //        expectedValue);
+             verify(mock_context, times(0)).write(new LongWritable(98L),
+                     new Candidate(new LongWritable(443L), clusterSize));
              
-         //} catch (Exception e) {
-         //    TestCase.fail();
-         //}         
+         } catch (Exception e) {
+             TestCase.fail();
+         }         
         
     }
     

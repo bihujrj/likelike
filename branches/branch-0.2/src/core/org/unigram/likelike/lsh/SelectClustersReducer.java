@@ -33,7 +33,7 @@ import org.unigram.likelike.common.SeedClusterId;
  * SelectClustersReducer. 
  */
 public class SelectClustersReducer extends
-        Reducer<SeedClusterId, RelatedUsersWritable,
+        Reducer<SeedClusterId, LongWritable,
         SeedClusterId, RelatedUsersWritable> {
     
     /**
@@ -47,22 +47,25 @@ public class SelectClustersReducer extends
      */
     @Override
     public void reduce(final SeedClusterId key,
-            final Iterable<RelatedUsersWritable> values,
+            final Iterable<LongWritable> values,
             final Context context)
             throws IOException, InterruptedException {
         
         List<LongWritable> ids 
             = new ArrayList<LongWritable>();
-
-        for (RelatedUsersWritable relatedUsers : values) {
-            List<LongWritable> tmpUsers = relatedUsers.getRelatedUsers();
-            ids.addAll(tmpUsers);
-            if (ids.size() >= this.maximumClusterSize) {
+        long clusterSize = 0;
+        for (LongWritable id : values) {
+            ids.add(new LongWritable(id.get()));
+            clusterSize += 1;
+            if (clusterSize >= this.maximumClusterSize) {
                 break;
             }
         }
-        if (this.minimumClusterSize <= ids.size()) {
-            context.write(key, new RelatedUsersWritable(ids));
+        
+        if (this.minimumClusterSize <= clusterSize) {
+            RelatedUsersWritable relatedUsers
+                = new RelatedUsersWritable(ids);
+                context.write(key, relatedUsers);
         }
     }
     
