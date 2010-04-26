@@ -270,9 +270,10 @@ public class LSHRecommendations extends
         FileInputFormat.addInputPath(job, inputPath);
         FileOutputFormat.setOutputPath(job, outputPath);
         job.setMapperClass(SelectClustersMapper.class);
+        job.setCombinerClass(SelectClustersReducer.class);
         job.setReducerClass(SelectClustersReducer.class);
         job.setMapOutputKeyClass(SeedClusterId.class);
-        job.setMapOutputValueClass(LongWritable.class);
+        job.setMapOutputValueClass(RelatedUsersWritable.class);
         job.setOutputKeyClass(SeedClusterId.class);
         job.setOutputValueClass(RelatedUsersWritable.class);
         job.setOutputFormatClass(

@@ -37,7 +37,7 @@ import org.unigram.likelike.lsh.function.IHashFunction;
  * SelectClustersMapper.
  */
 public class SelectClustersMapper extends
-        Mapper<LongWritable, Text, SeedClusterId, LongWritable> {
+        Mapper<LongWritable, Text, SeedClusterId, RelatedUsersWritable> {
     /**
      * map.
      * @param key dummy
@@ -64,7 +64,7 @@ public class SelectClustersMapper extends
                         seedsAry[i]);
                 context.write(new SeedClusterId(
                         seedsAry[i], clusterId.get()), 
-                        new LongWritable(id));
+                        new RelatedUsersWritable(id)); 
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             System.out.println("PARSING ERROR in line: " + inputStr);
