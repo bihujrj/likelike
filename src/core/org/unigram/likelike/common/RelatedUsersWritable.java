@@ -47,10 +47,9 @@ public class RelatedUsersWritable implements Writable {
         this.relatedUsers = users;
     }
     
-    
     /**
      * Constructor. 
-     * @param users related users
+     * @param id related user id
      */
     public RelatedUsersWritable(final Long id) {
         List<LongWritable> eid = 
@@ -78,7 +77,7 @@ public class RelatedUsersWritable implements Writable {
         try {
             int listSize = in.readInt();
             this.relatedUsers= new ArrayList<LongWritable>(listSize);
-            for(int i=0; i<listSize;i++) {
+            for(int i=0; i<listSize; i++) {
                 long userID = in.readLong();
                 this.relatedUsers.add(new LongWritable(userID));
             } 
@@ -117,6 +116,12 @@ public class RelatedUsersWritable implements Writable {
         return rtStr.toString();
     }
     
+    /**
+     * equals.
+     * 
+     * @param o checked whether o is identical to this or not  
+     * @return true when o is identical to this, otherwise return true
+     */
     @Override
     public boolean equals(final Object o) {
         if (o instanceof RelatedUsersWritable) {
@@ -124,6 +129,14 @@ public class RelatedUsersWritable implements Writable {
             return (this.relatedUsers.equals(that.relatedUsers));
         }
         return false;
-    }    
+    }
+    
+    /**
+     * hashCode.
+     * @return hash value
+     */
+    public int hashCode() {
+        return this.relatedUsers.hashCode();
+    }
 
 }

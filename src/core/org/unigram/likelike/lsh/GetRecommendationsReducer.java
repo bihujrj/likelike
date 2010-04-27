@@ -89,7 +89,7 @@ public class GetRecommendationsReducer extends
     /** maximum number of output per example. */
     private long maxOutputSize;
     
-    /** rank the reduced candidates with the comparator */
+    /** rank the reduced candidates with the comparator. */
     private Comparator comparator;
     
     /**

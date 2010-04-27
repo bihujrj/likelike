@@ -319,10 +319,13 @@ public class LSHRecommendations extends
                 + "use INPUT as input resource");
         System.out.println("    -output   OUTPUT          " 
                 + "use OUTPUT as outupt prefix");
-        System.out.println("    -depth    DEPTH           " 
-                + "use DEPTH as size of concatinations");        
-        System.out.println("    -iterate  ITERATE         " 
-                + "use ITERATE as the number of hash keys");        
+        System.out.println("    [-depth   DEPTH]          " 
+                + "use DEPTH as size of concatinations (default 1)");        
+        System.out.println("    [-iterate  ITERATE]       " 
+                + "use ITERATE as the number of hash keys (default 1)");        
+        System.out.println("    [-maxRecommend  SIZE]     " 
+                + "use SIZE as the maximum number of recommendation "
+                + "for one example");        
         System.out.println("    [-help]                   "
                 + "show this message");
     }    

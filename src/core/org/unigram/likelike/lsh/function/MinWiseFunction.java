@@ -16,7 +16,6 @@
  */
 package org.unigram.likelike.lsh.function;
 
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.Set;
 
