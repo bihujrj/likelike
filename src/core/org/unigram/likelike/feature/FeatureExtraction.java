@@ -103,13 +103,13 @@ public class FeatureExtraction  extends Configured
            throws  IOException, InterruptedException, ClassNotFoundException {
         Path addedfeaturePath = new Path(addedFeatureDir);
         Path outputPath = new Path(outputDir);
-        //Path featurePath = new Path(featureDir);
+        Path featurePath = new Path(featureDir);
         FsUtil.checkPath(outputPath, this.fs);
         
         Job job = new Job(conf);
         job.setJarByClass(FeatureExtraction.class);
         FileInputFormat.addInputPath(job, addedfeaturePath);
-        //FileInputFormat.addInputPath(job, featurePath);
+        FileInputFormat.addInputPath(job, featurePath);
         FileOutputFormat.setOutputPath(job, outputPath);
         job.setMapperClass(FeatureExtractionMapper.class); 
         job.setReducerClass(FeatureExtractionReducer.class);
