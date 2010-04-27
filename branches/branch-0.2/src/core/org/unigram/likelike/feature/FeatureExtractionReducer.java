@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -26,33 +27,43 @@ public class FeatureExtractionReducer extends
     /**
      * reduce. 
      * @param target -
-     * @param candidates -
+     * @param values -
      * @param context -
      * @throws IOException -
      * @throws InterruptedException -
      */    
     @Override
     public void reduce(final LongWritable target,
-            final Iterable<Text> candidates,
+            final Iterable<Text> values,
             final Context context)
             throws IOException, InterruptedException {    
 
         Map<Long, Long> featureCount = new HashMap<Long, Long>();  
-        for (Text f : candidates) {
-            String featureStr = f.toString();
-            Map<Long, Long> currentFeature 
-                = this.getFeature(featureStr);
-            Set demensions = currentFeature.keySet();
-            Iterator iterator = demensions.iterator();
-            while (iterator.hasNext()) {
-                Long demension = (Long) iterator.next();
-                if (featureCount.containsKey(demension)) {
-                    Long c = featureCount.get(demension);
-                    c += 1;
-                    featureCount.put(demension, c);
-                } else {
-                    featureCount.put(demension, new Long(1));
+        Map<Long, Long> targetFeatures = new HashMap<Long, Long>();
+        
+        for (Text value : values) {
+            String valueStr = value.toString();
+            
+            String[] valueArray = valueStr.split("\t");
+            if (valueArray.length == 2) {  // related example and the features 
+                String featureStr = valueArray[1];
+                Map<Long, Long> currentFeature 
+                    = this.getFeature(featureStr);
+                
+                Set<Long> demensions = currentFeature.keySet();
+                Iterator<Long> iterator = demensions.iterator();
+                while (iterator.hasNext()) {
+                    Long demension = (Long) iterator.next();
+                    if (featureCount.containsKey(demension)) {
+                        Long c = featureCount.get(demension);
+                        c += 1;
+                        featureCount.put(demension, c);
+                    } else {
+                        featureCount.put(demension, new Long(1));
+                    }
                 }
+            } else if (valueArray.length == 1) { // target features
+                targetFeatures = this.getFeature(valueStr);
             }
         }
 
@@ -77,10 +88,16 @@ public class FeatureExtractionReducer extends
                 return;
             }
             Map.Entry obj = (Map.Entry) it.next();
-                rtString.append((Long) obj.getKey());
+            Long feature = (Long) obj.getKey();
+            if (!targetFeatures.containsKey(feature)) {
+                rtString.append(feature);
                 rtString.append(" ");
+                i+=1;
+            }
         }
-        context.write(target, new Text(rtString.toString()));
+        if (rtString.length() > 0) {
+            context.write(target, new Text(rtString.toString()));
+        }
         
     }
     

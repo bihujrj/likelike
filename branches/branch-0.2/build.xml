@@ -36,10 +36,10 @@
 	<property name="doc.dir" location="${basedir}/doc" />
 	<property name="javadoc.dir" location="${doc.dir}/javadoc" />
 
-	<property name="build.dir" location="${src.dir}/build" />
-	<property name="core.build.dir" location="${core.src.dir}/build" />
-	<property name="test.build.dir" location="${test.src.dir}/build" />
-	<property name="examples.build.dir" location="${examples.src.dir}/build" />
+	<property name="build.dir" location="${basedir}/build" />
+	<property name="core.build.dir" location="${build.dir}/core" />
+	<property name="test.build.dir" location="${build.dir}/test" />
+	<property name="examples.build.dir" location="${build.dir}/examples" />
 	<property name="test.build.resource.dir" location="${test.build.dir}/resources" />
 	<property name="reports.dir" location="${test.build.dir}/reports" />
 	<property name="dist.dir" value="${build.dir}/${package}" />
@@ -101,12 +101,8 @@
 	</target>
 
 	<target name="clean" depends="init" description="Deletes build products">
-		<delete dir="${examples.build.dir}" />
-		<delete dir="${test.build.dir}" />
-		<delete dir="${core.build.dir}" />
 		<delete dir="${build.dir}" />
 		<delete dir="${javadoc.dir}" />
-		<delete dir="${reports.dir}" />
 		<delete file="${likelike-examples.jar}" />
 		<delete file="${likelike.jar}" />
 		<delete file="${likelike-test.jar}" />
