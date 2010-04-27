@@ -312,13 +312,18 @@ public class LSHRecommendations extends
      * Show parameters for FreqentNGramExtraction.
      */
     private void showParameters() {
+        System.out.println("Extract related (or similar) examples.");
+        System.out.println("");             
         System.out.println("Paramters:");
-        System.out.println("    -input INPUT                " 
+        System.out.println("    -input    INPUT           " 
                 + "use INPUT as input resource");
-        System.out.println("    -output OUTPUT              " 
+        System.out.println("    -output   OUTPUT          " 
                 + "use OUTPUT as outupt prefix");
-        System.out.println("    [-help]                     "
-                + "show usage");
+        System.out.println("    -depth    DEPTH           " 
+                + "use DEPTH as size of concatinations");        
+        System.out.println("    -iterate  ITERATE         " 
+                + "use ITERATE as the number of hash keys");        
+        System.out.println("    [-help]                   "
+                + "show this message");
     }    
-    
 }
