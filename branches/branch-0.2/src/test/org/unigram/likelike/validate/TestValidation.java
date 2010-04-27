@@ -35,7 +35,7 @@ abstract class RunWithCheck {
 
         /* run validation */
         String[] args = {
-                        "-recommend",  recommendPath, 
+                        "-input",  recommendPath, 
                         "-feature",  featurePath,
                         "-output", outputPath,
                         "-threshold", thresholdStr
