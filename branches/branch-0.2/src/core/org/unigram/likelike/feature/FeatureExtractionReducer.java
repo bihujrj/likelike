@@ -84,7 +84,7 @@ public class FeatureExtractionReducer extends
         int i = 0;
         while(it.hasNext()) {
             if (i >= this.maxOutputSize) { // TODO to be parameterized
-                return;
+                break;
             }
             Map.Entry obj = (Map.Entry) it.next();
             Long feature = (Long) obj.getKey();
