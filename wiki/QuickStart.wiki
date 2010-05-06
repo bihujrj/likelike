@@ -30,7 +30,7 @@
 =Running examples= 
 Now let's run Likelike with a sample input file attached in the Likelike source (likelike/src/test/resources/testInput.txt).
 
-=Nearest neighbor extraction= 
+==Nearest neighbor extraction==
 Here I will describe the way to extract the similar (related) examples from data file. Here examples mean instances such as users in E-commerce sites or pictures for picture sharing sites).
 
 First copy a sample input file into HDFS.
@@ -54,7 +54,7 @@ $ hadoop dfs -cat /blah/blah/path/testOutpuDir
 0       2649
 }}}
 
-=Feature extraction from similar (related) examples=
+==Feature extraction from similar (related) examples==
 
 Now let's extract features from related examples. This function is useful to extract some recommendations for users of E-commerce sites.
 
