@@ -42,7 +42,7 @@ $ hadoop dfs -put src/test/resources/testInput.txt /blah/blah/path/
 Run likelike with the following parameters.
 
 {{{
-sh bin/likelike lsh -input src/test/resources/testInput.txt -output testOutputDir
+sh bin/likelike lsh -input /blah/blah/path/testInput.txt -output testOutputDir
 }}}
 
 We can see the result by the following command.
@@ -61,7 +61,7 @@ Now let's extract features from related examples. This function is useful to ext
 To run this function, we use the result of nearest neighbor extraction. The extraction can be done with the following command.
 
 {{{
-sh bin/likelike lsh -input src/test/resources/testOutputDir -feature rc/test/resources/testInput.txt -output testOutputDir.features
+sh bin/likelike lsh -input /blah/blah/path/testOutputDir -feature /blah/blah/path/testInput.txt -output testOutputDir.features
 }}}
 
 We can see that the input file is the output from the lsh (nearest neighbor extraction) command, and after '-feature' parameter the input of the lsh command is also assigned. 
@@ -69,7 +69,7 @@ We can see that the input file is the output from the lsh (nearest neighbor extr
 Now let's see the result.
 
 {{{
-$ hadoop dfs -cat testOutputDir.features
+$ hadoop dfs -cat /blah/blah/path/testOutputDir.features
 0       4439 3825 2066 4270 677 2863 2738 4141 1090 3811
 1       1245 2751 1223 2067 3287 3829 1368 2980 285 1658
 2       1622 2442 3704 4066 4608 4746 545 3398 4072 1635
