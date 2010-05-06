@@ -64,4 +64,21 @@ To run this function, we use the result of nearest neighbor extraction. The extr
 sh bin/likelike lsh -input src/test/resources/testOutputDir -feature rc/test/resources/testInput.txt -output testOutputDir.features
 }}}
 
-We can see that the input file is the output from the lsh (nearest neighbor extraction) command, and after '-feature' parameter the input of the lsh command is also assigned.  
+We can see that the input file is the output from the lsh (nearest neighbor extraction) command, and after '-feature' parameter the input of the lsh command is also assigned. 
+
+Now let's see the result.
+
+{{{
+$ hadoop dfs -cat testOutputDir.features
+0       4439 3825 2066 4270 677 2863 2738 4141 1090 3811
+1       1245 2751 1223 2067 3287 3829 1368 2980 285 1658
+2       1622 2442 3704 4066 4608 4746 545 3398 4072 1635
+3       4131 4537 686 2854 1914 414 1370 1219 6 2038
+4       4065 1220 4609 3402 1489 4408 1229 829 2075 4530
+5       2615 4267 3405 1216 819 1634 1366 4743 4142 4619
+6       4944 1642 549 4069 2985 279 3831 4259 10 552
+7       1607 2307 3286 822 3405 2440 4751 4069 2204 3280
+8       3445 2748 1914 4882 1646 5 4406 3828 1099 545
+}}}
+
+ 
