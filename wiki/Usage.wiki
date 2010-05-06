@@ -1,7 +1,7 @@
 #labels Featured
 =Input data format=
 Likelike input files have the following two components split by tab,
- * instance id - use id (or IP address) who submit a query
+ * instance id
  * features    - features for the instance. Each feature is split by tab
 
 The following is the sample input.
