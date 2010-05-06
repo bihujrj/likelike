@@ -4,8 +4,6 @@ Likelike input files have the following two components split by tab,
  * instance id - use id (or IP address) who submit a query
  * features    - features for the instance. Each feature is split by tab
 
-The input data has three corresponding rows split by tab and the order is user id, query string, and time. 
-
 The following is the sample input.
 {{{
 0       776 2919 4576 4485 2380 4261 3622 1456 2109 3227
