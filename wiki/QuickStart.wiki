@@ -10,21 +10,18 @@
  * Install Likelike
    # go to your home directory (/home/username if your account name is 'username')
      {{{
-     cd /home/username/
+     $ cd /home/username/
      }}}
-   # download the source file by svn
+   # download the latest the tar.gz file from the [http://code.google.com/p/likelike/downloads/list donwnload page] 
+   # extract the file
      {{{
-     svn checkout http://likelike.googlecode.com/svn/trunk/ likelike
+     $ tar zxvf likelike-*-*-*.tar.gz
+     $ cd likelike-*-*
      }}}
-   # run ant
-     {{{
-     cd likelike
-     ant
-     }}}     
    # set path 
    adding the oluolu jar file into HADOOP_CLASSPATH in $HADOOP_HOME/conf/hadoop-env.sh)
      {{{
-     export HADOOP_CLASSPATH=$CLASSPATH:/home/username/likelike/likelike-***.jar
+     export HADOOP_CLASSPATH=$CLASSPATH:/home/username/likelike/likelike-*-*.jar
      }}}
 
 =Running examples= 
