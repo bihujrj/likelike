@@ -18,14 +18,9 @@
      $ tar zxvf likelike-*-*-*.tar.gz
      $ cd likelike-*-*
      }}}
-   # set path 
-   adding the oluolu jar file into HADOOP_CLASSPATH in $HADOOP_HOME/conf/hadoop-env.sh)
-     {{{
-     export HADOOP_CLASSPATH=$CLASSPATH:/home/username/likelike/likelike-*-*.jar
-     }}}
 
 =Running examples= 
-Now let's run Likelike with a sample input file attached in the Likelike source (likelike/src/test/resources/testInput.txt).
+Now let's run Likelike with a sample input file attached in the Likelike source (input_sample/testInput.txt).
 
 ==Nearest neighbor extraction==
 Here I will describe the way to extract the similar (related) examples from data file. Here examples mean instances such as users in E-commerce sites or pictures for picture sharing sites).
@@ -33,7 +28,7 @@ Here I will describe the way to extract the similar (related) examples from data
 First copy the sample input file into HDFS. 
 
 {{{
-$ hadoop dfs -put src/test/resources/testInput.txt /blah/blah/path/
+$ hadoop dfs -put input_sample/testInput.txt /blah/blah/path/
 }}}
 
 The sample input format have two columns, example id and the features. The two columns are split by tab and features are also split by spaces. If the data is past purchase data in some E-commerce sites, examples are the user ids and the features mean item ids bought by the user. The following is a fraction of the sample input.
